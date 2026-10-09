@@ -34,7 +34,7 @@ export function Layout({ children }: { children: ReactNode }) {
         <footer className="mx-auto w-full max-w-[720px] px-4 pb-10">
           <div className="flex flex-col gap-3 border-t-3 border-ink pt-5 text-sm sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-col gap-1">
-              <span className="display text-lg">Pay Up</span>
+              <span className="flex items-center gap-2"><img src="/favicon.svg" alt="" width={22} height={22} className="h-[22px] w-[22px]" /><span className="display text-lg">Pay Up</span></span>
               {root && <span>by {root.operatorName}</span>}
             </div>
             <nav className="flex flex-wrap gap-x-5 gap-y-2">

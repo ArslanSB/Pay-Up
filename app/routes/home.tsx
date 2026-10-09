@@ -43,7 +43,10 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     <main className="flex flex-col gap-12">
       <header className="grid gap-8 sm:grid-cols-[1.1fr_0.9fr] sm:grid-rows-[auto_auto] sm:gap-x-10 sm:gap-y-12">
         <div className="flex flex-col gap-5">
-          <p className="display text-2xl">Pay Up</p>
+          <p className="flex items-center gap-2">
+            <img src="/favicon.svg" alt="" width={28} height={28} className="h-7 w-7" />
+            <span className="display text-2xl">Pay Up</span>
+          </p>
           <h1 className="display text-[56px]">Catch yourself.<br />Pay up.</h1>
           <p className="max-w-[40ch] text-lg font-semibold leading-snug">
             Pay Up is a fine jar for yourself. Make a jar for a habit you want to break, fine yourself every time you slip, and settle up however you like.
