@@ -14,7 +14,7 @@ afterEach(() => vi.unstubAllGlobals());
 describe("home loader", () => {
   it("lists configured providers for a visitor and flags a sign-in error", async () => {
     const data = await homeLoader(callArgs(getRequest("http://localhost:3000/?error=signin")));
-    expect(data).toEqual({ providers: { google: true, github: true }, signInError: true, deleted: false });
+    expect(data).toEqual({ providers: { google: true, github: true }, signInError: true, deleted: false, appUrl: "http://localhost:3000" });
   });
   it("redirects a signed-in user to /jars", async () => {
     const user = makeUser();

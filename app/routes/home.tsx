@@ -1,17 +1,20 @@
-import { Link, redirect } from "react-router";
+import { redirect } from "react-router";
 import type { Route } from "./+types/home";
 import { DemoJar } from "../components/DemoJar";
 import { getDb } from "../lib/db.server";
 import { env } from "../lib/env.server";
 import { getUser } from "../lib/session.server";
 
-export function meta() {
+export function meta({ loaderData }: Route.MetaArgs) {
+  const appUrl = loaderData?.appUrl ?? "";
   return [
     { title: "Pay Up" },
     {
       name: "description",
       content: "Make a jar for the habit you want to catch. Tap it when you slip, watch the fine pile up, settle when it hurts. Share the damage if you dare.",
     },
+    { tagName: "link", rel: "privacy-policy", href: `${appUrl}/privacy` },
+    { tagName: "link", rel: "terms-of-service", href: `${appUrl}/terms` },
   ];
 }
 
@@ -23,6 +26,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     providers: { google: Boolean(e.google), github: Boolean(e.github) },
     signInError: new URL(request.url).searchParams.get("error") === "signin",
     deleted: new URL(request.url).searchParams.get("deleted") === "1",
+    appUrl: e.appUrl,
   };
 }
 
@@ -33,7 +37,7 @@ const STEPS = [
 ];
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  const { providers, signInError, deleted } = loaderData;
+  const { providers, signInError, deleted, appUrl } = loaderData;
   const none = !providers.google && !providers.github;
   return (
     <main className="flex flex-col gap-12">
@@ -56,7 +60,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           {none && <p className="font-semibold">Sign-in isn't set up yet.</p>}
           {!none && (
             <p className="text-sm">
-              By continuing you accept the <Link to="/terms" className="link">terms</Link> and the <Link to="/privacy" className="link">privacy and cookies page</Link>.
+              By continuing you accept the <a href={`${appUrl}/terms`} className="link">terms</a> and the <a href={`${appUrl}/privacy`} className="link">privacy and cookies page</a>.
             </p>
           )}
         </div>
@@ -80,7 +84,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           Signing in is how Pay Up knows which jars are yours. With Google it requests only your basic profile through the openid,
           email and profile scopes: your name, your email address and your profile picture. They are used to create your account and
           show your name on your own pages. Pay Up never reads your Gmail, Drive, Contacts or Calendar, never posts on your behalf,
-          and never shares or sells your data. GitHub sign-in works the same way. The <Link to="/privacy" className="link">privacy policy</Link> has the details.
+          and never shares or sells your data. GitHub sign-in works the same way. The <a href={`${appUrl}/privacy`} className="link">privacy policy</a> has the details.
         </p>
       </section>
     </main>
