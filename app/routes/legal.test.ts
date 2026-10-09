@@ -12,8 +12,8 @@ describe("legal pages", () => {
     }
   });
   it("have titles", () => {
-    expect(termsMeta()).toContainEqual({ title: "Terms of use" });
-    expect(privacyMeta()).toContainEqual({ title: "Privacy and cookies" });
+    expect(termsMeta()).toContainEqual({ title: "Terms of Service" });
+    expect(privacyMeta()).toContainEqual({ title: "Privacy Policy" });
   });
 });
 

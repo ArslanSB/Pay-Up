@@ -38,8 +38,8 @@ export function Layout({ children }: { children: ReactNode }) {
               {root && <span>by {root.operatorName}</span>}
             </div>
             <nav className="flex flex-wrap gap-x-5 gap-y-2">
-              <Link to="/terms" className="link">Terms</Link>
-              <Link to="/privacy" className="link">Privacy and cookies</Link>
+              <Link to="/terms" className="link">Terms of Service</Link>
+              <Link to="/privacy" className="link">Privacy Policy</Link>
               {root?.contactEmail && <a href={`mailto:${root.contactEmail}`} className="link">Contact</a>}
             </nav>
           </div>

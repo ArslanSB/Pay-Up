@@ -11,7 +11,7 @@ export function meta({ loaderData }: Route.MetaArgs) {
     { title: "Pay Up" },
     {
       name: "description",
-      content: "Make a jar for the habit you want to catch. Tap it when you slip, watch the fine pile up, settle when it hurts. Share the damage if you dare.",
+      content: "Pay Up is a habit-breaking web app. Make a jar for a habit you want to stop, add a self-imposed fine each time you slip, and settle the running total however you like.",
     },
     { tagName: "link", rel: "privacy-policy", href: `${appUrl}/privacy` },
     { tagName: "link", rel: "terms-of-service", href: `${appUrl}/terms` },
@@ -48,8 +48,10 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             <span className="display text-2xl">Pay Up</span>
           </p>
           <h1 className="display text-[56px]">Catch yourself.<br />Pay up.</h1>
-          <p className="max-w-[40ch] text-lg font-semibold leading-snug">
-            Pay Up is a fine jar for yourself. Make a jar for a habit you want to break, fine yourself every time you slip, and settle up however you like.
+          <p className="max-w-[44ch] text-lg font-semibold leading-snug">
+            Pay Up is a web app for breaking habits. You create a jar for a habit you want to stop, such as negativity or swearing, and
+            every time you catch yourself doing it you add a self-imposed fine to the jar. Pay Up keeps the running total and the history so
+            you can settle it however you like. It never moves real money.
           </p>
         </div>
         <div className="sm:col-start-2 sm:row-start-1">
@@ -63,8 +65,8 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           {none && <p className="font-semibold">Sign-in isn't set up yet.</p>}
           {!none && (
             <p className="max-w-[46ch] text-sm leading-snug">
-              By continuing you accept the <a href={`${appUrl}/terms`} className="link">terms</a> and the{" "}
-              <a href={`${appUrl}/privacy`} className="link">privacy and cookies page</a>, and authorise Pay Up to receive your Google or
+              By continuing you accept the <a href={`${appUrl}/terms`} className="link">Terms of Service</a> and the{" "}
+              <a href={`${appUrl}/privacy`} className="link">Privacy Policy</a>, and authorise Pay Up to receive your Google or
               GitHub account name, email address and profile picture. Pay Up uses them solely to create your account, keep you signed in and
               show your name on your own pages. It does not request, access or store any other data from your account, and never posts on
               your behalf.

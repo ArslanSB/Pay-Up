@@ -6,7 +6,7 @@ import { env } from "../lib/env.server";
 const UPDATED = "2026-10-09";
 
 export function meta() {
-  return [{ title: "Privacy and cookies" }];
+  return [{ title: "Privacy Policy" }];
 }
 
 export function loader({}: Route.LoaderArgs) {
@@ -22,7 +22,7 @@ const COOKIES = [
 
 export default function Privacy({ loaderData }: Route.ComponentProps) {
   return (
-    <LegalPage title="Privacy and cookies" data={loaderData}>
+    <LegalPage title="Privacy Policy" data={loaderData}>
       <Section title="1. Who is responsible">
         <p>The person named above runs this deployment of Pay Up and is the data controller. Write to the contact address for anything about your data.</p>
       </Section>
@@ -61,7 +61,7 @@ export default function Privacy({ loaderData }: Route.ComponentProps) {
         <p>Your data is stored on the server the operator runs this site from; ask if you need to know where it is hosted. The site uses HTTPS and signed cookies, and only the operator can reach the database. No system is perfectly secure.</p>
       </Section>
       <Section title="9. Children and changes">
-        <p>The service is for people aged 16 and over. We may update this page; the date at the top tells you when. The <Link to="/terms" className="link">terms of use</Link> cover the rest.</p>
+        <p>The service is for people aged 16 and over. We may update this page; the date at the top tells you when. The <Link to="/terms" className="link">Terms of Service</Link> cover the rest.</p>
       </Section>
     </LegalPage>
   );

@@ -6,7 +6,7 @@ import { env } from "../lib/env.server";
 const UPDATED = "2026-10-09";
 
 export function meta() {
-  return [{ title: "Terms of use" }];
+  return [{ title: "Terms of Service" }];
 }
 
 export function loader({}: Route.LoaderArgs) {
@@ -16,7 +16,7 @@ export function loader({}: Route.LoaderArgs) {
 
 export default function Terms({ loaderData }: Route.ComponentProps) {
   return (
-    <LegalPage title="Terms of use" data={loaderData}>
+    <LegalPage title="Terms of Service" data={loaderData}>
       <Section title="1. What Pay Up is">
         <p>Pay Up is a personal accountability tally. You make jars for habits you want to catch, add a fine to yourself each time you do the thing, and settle the balance however you choose. No money moves through the service; the amounts are numbers you keep for yourself. Nothing here is financial, legal, medical or psychological advice.</p>
       </Section>
@@ -39,7 +39,7 @@ export default function Terms({ loaderData }: Route.ComponentProps) {
         <p>You can delete your account from the dashboard at any time, which erases everything in it. We may suspend or delete accounts that abuse the service, and may remove long-inactive accounts after trying to give notice.</p>
       </Section>
       <Section title="8. Law and changes">
-        <p>These terms are governed by Spanish law. If you are a consumer in the European Union, you can bring claims in the courts of the country where you live. We may update these terms; the date at the top tells you when, and using the service after a change means you accept it. Our <Link to="/privacy" className="link">privacy and cookies page</Link> explains what we store.</p>
+        <p>These terms are governed by Spanish law. If you are a consumer in the European Union, you can bring claims in the courts of the country where you live. We may update these terms; the date at the top tells you when, and using the service after a change means you accept it. Our <Link to="/privacy" className="link">Privacy Policy</Link> explains what we store.</p>
       </Section>
     </LegalPage>
   );
