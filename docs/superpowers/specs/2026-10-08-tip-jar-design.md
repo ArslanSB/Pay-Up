@@ -250,7 +250,7 @@ Vitest, Node environment.
 
 ## 12. Docker and configuration
 
-Multi-stage `Dockerfile` on `node:22-slim`: install dependencies, run `react-router build`, copy the build and production dependencies into a slim runtime stage, run `react-router-serve ./build/server/index.js`. SQLite lives at `DATABASE_PATH` (default `/app/data/payup.db` in the image, `./data/payup.db` locally) and compose mounts `./data` there.
+Multi-stage `Dockerfile` on `node:22-slim`: install dependencies, run `react-router build`, copy the build and production dependencies into a slim runtime stage, run `server.js` (a small Express server around `@react-router/express` that trusts the reverse proxy per `TRUST_PROXY`, serves static assets and `/healthz`). SQLite lives at `DATABASE_PATH` (default `/app/data/payup.db` in the image, `./data/payup.db` locally) and compose mounts `./data` there.
 
 Environment:
 ```
@@ -260,6 +260,7 @@ GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET
 GITHUB_CLIENT_ID / GITHUB_CLIENT_SECRET
 DATABASE_PATH           default ./data/payup.db
 PORT                    default 3000
+TRUST_PROXY             default "loopback, linklocal, uniquelocal"; Express trust-proxy value so request.url reflects the public https origin behind a proxy
 APP_LOCALE              default es-ES, used when Accept-Language is missing or invalid
 ```
 

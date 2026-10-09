@@ -19,7 +19,7 @@ A provider whose pair is empty in `.env` simply has no button on the landing pag
 
 - `npm test`
 - `npm run typecheck`
-- `npm run build` then `npm start` serves the production build on `PORT` (default 3000).
+- `npm run build` then `npm start` serves the production build on `PORT` (default 3000) through `server.js`, a small Express server that trusts the reverse proxy in front of it (see `TRUST_PROXY`). A `/healthz` endpoint answers `ok`.
 
 ## Docker
 
@@ -41,6 +41,7 @@ The SQLite file lives in `./data` on the host. Back it up by copying that folder
 | `DATABASE_PATH` | no | `./data/payup.db` (`/app/data/payup.db` in Docker) |
 | `APP_LOCALE` | no | `es-ES`, used when the browser sends no usable Accept-Language |
 | `OPERATOR_NAME` / `CONTACT_EMAIL` | for a public deployment | shown on the Terms and Privacy pages; the pages say they are not configured until you set them |
+| `TRUST_PROXY` | behind a reverse proxy | `loopback, linklocal, uniquelocal`: trusts X-Forwarded-* from private-network proxies such as a Docker network or a proxy on the same host. Set to `true` to trust any, or an Express trust-proxy value. The server also treats every request as addressed to `APP_URL`, so form posts work behind any proxy as long as `APP_URL` is the public origin. |
 | `PORT` | no | `3000` |
 
 Legal pages live at `/terms` and `/privacy` (plain-language drafts, not legal advice; set `OPERATOR_NAME` and `CONTACT_EMAIL`). There is no cookie banner because the only cookies are the session, the ten-minute sign-in cookie and the timezone cookie. Users can delete their account from the dashboard.
