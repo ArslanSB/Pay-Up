@@ -2,7 +2,9 @@
   "name": "pay-up",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=22.22.0" },
+  "engines": {
+    "node": ">=22.22.0"
+  },
   "scripts": {
     "dev": "node --env-file-if-exists=.env node_modules/.bin/react-router dev",
     "build": "react-router build",
@@ -33,5 +35,6 @@
     "typescript": "5.9.3",
     "vite": "8.3.4",
     "vitest": "5.0.3"
-  }
+  },
+  "version": "0.1.0"
 }
