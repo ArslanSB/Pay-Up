@@ -60,6 +60,12 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           {none && <p className="font-semibold">Sign-in isn't set up yet.</p>}
           {!none && (
             <p className="text-sm">
+              Signing in with Google or GitHub only tells Pay Up who you are: it receives your name, email address and profile picture, nothing else,
+              and never posts on your behalf. The <a href={`${appUrl}/privacy`} className="link">privacy policy</a> has the details.
+            </p>
+          )}
+          {!none && (
+            <p className="text-sm">
               By continuing you accept the <a href={`${appUrl}/terms`} className="link">terms</a> and the <a href={`${appUrl}/privacy`} className="link">privacy and cookies page</a>.
             </p>
           )}
@@ -76,16 +82,6 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             </li>
           ))}
         </ol>
-      </section>
-
-      <section className="flex max-w-[64ch] flex-col gap-2">
-        <h2 className="text-xl font-extrabold">What we do with your Google account</h2>
-        <p>
-          Signing in is how Pay Up knows which jars are yours. With Google it requests only your basic profile through the openid,
-          email and profile scopes: your name, your email address and your profile picture. They are used to create your account and
-          show your name on your own pages. Pay Up never reads your Gmail, Drive, Contacts or Calendar, never posts on your behalf,
-          and never shares or sells your data. GitHub sign-in works the same way. The <a href={`${appUrl}/privacy`} className="link">privacy policy</a> has the details.
-        </p>
       </section>
     </main>
   );

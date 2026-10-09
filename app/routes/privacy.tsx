@@ -27,7 +27,7 @@ export default function Privacy({ loaderData }: Route.ComponentProps) {
         <p>The person named above runs this deployment of Pay Up and is the data controller. Write to the contact address for anything about your data.</p>
       </Section>
       <Section title="2. What we store">
-        <p><b>Account.</b> Which provider you signed in with (Google or GitHub), the ID that provider gives us for you, your display name, your avatar address, and your email address if the provider shares a verified one. We never receive your password.</p>
+        <p><b>Account.</b> Which provider you signed in with (Google or GitHub), the ID that provider gives us for you, your display name, your avatar address, and your email address if the provider shares a verified one. From Google this is the basic profile only, through the openid, email and profile scopes; Pay Up never asks for access to Gmail, Drive, Contacts, Calendar or anything else. We never receive your password.</p>
         <p><b>Content.</b> Your jars (title, description, fine amount, currency, visibility, public link), the fines you add (time, amount, optional note) and your settle-ups (total, optional note).</p>
         <p><b>Technical.</b> The server keeps ordinary request logs (IP address, browser, pages requested, time) for a short period, for security and troubleshooting. There are no analytics, no advertising trackers and no profiling.</p>
       </Section>
