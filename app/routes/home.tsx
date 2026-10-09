@@ -11,7 +11,7 @@ export function meta({ loaderData }: Route.MetaArgs) {
     { title: "Pay Up" },
     {
       name: "description",
-      content: "Pay Up is a habit-breaking web app. Make a jar for a habit you want to stop, add a self-imposed fine each time you slip, and settle the running total however you like.",
+      content: "A fine jar for yourself. Pick a habit you want to drop, fine yourself every time you slip, and settle the tally however you like.",
     },
     { tagName: "link", rel: "privacy-policy", href: `${appUrl}/privacy` },
     { tagName: "link", rel: "terms-of-service", href: `${appUrl}/terms` },
@@ -31,9 +31,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 
 const STEPS = [
-  "Make a jar for the habit you want to catch, and set the fine per slip.",
-  "Tap the big pink button every time you catch yourself. Add a note if the moment deserves one.",
-  "Settle the tally however you like, and share the jar's link if you want witnesses. No money moves through the app.",
+  "Make a jar for the habit and set the fine per slip.",
+  "Tap the pink button every time you catch yourself. Add a note if it deserves one.",
+  "Settle up however you like. Share the link if you want witnesses.",
 ];
 
 export default function Home({ loaderData }: Route.ComponentProps) {
@@ -48,10 +48,9 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             <span className="display text-2xl">Pay Up</span>
           </p>
           <h1 className="display text-[56px]">Catch yourself.<br />Pay up.</h1>
-          <p className="max-w-[44ch] text-lg font-semibold leading-snug">
-            Pay Up is a web app for breaking habits. You create a jar for a habit you want to stop, such as negativity or swearing, and
-            every time you catch yourself doing it you add a self-imposed fine to the jar. Pay Up keeps the running total and the history so
-            you can settle it however you like. It never moves real money.
+          <p className="max-w-[40ch] text-lg font-semibold leading-snug">
+            Pay Up is a fine jar for yourself. Pick a habit you want to drop, fine yourself every time you slip, and settle the tally
+            however you like. It keeps score; no real money changes hands.
           </p>
         </div>
         <div className="sm:col-start-2 sm:row-start-1">
@@ -65,11 +64,8 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           {none && <p className="font-semibold">Sign-in isn't set up yet.</p>}
           {!none && (
             <p className="max-w-[46ch] text-sm leading-snug">
-              By continuing you accept the <a href={`${appUrl}/terms`} className="link">Terms of Service</a> and the{" "}
-              <a href={`${appUrl}/privacy`} className="link">Privacy Policy</a>, and authorise Pay Up to receive your Google or
-              GitHub account name, email address and profile picture. Pay Up uses them solely to create your account, keep you signed in and
-              show your name on your own pages. It does not request, access or store any other data from your account, and never posts on
-              your behalf.
+              Signing in only tells Pay Up who you are: your name, email and picture, nothing else. By continuing you agree to the{" "}
+              <a href={`${appUrl}/terms`} className="link">Terms of Service</a> and <a href={`${appUrl}/privacy`} className="link">Privacy Policy</a>.
             </p>
           )}
         </div>
