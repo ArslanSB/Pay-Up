@@ -32,10 +32,10 @@ export function Layout({ children }: { children: ReactNode }) {
       <body className="flex min-h-screen flex-col bg-yellow font-sans text-ink">
         <div className="mx-auto w-full max-w-[720px] flex-1 px-4 pb-10 pt-8">{children}</div>
         <footer className="mx-auto w-full max-w-[720px] px-4 pb-10">
-          <div className="flex flex-col gap-3 border-t-3 border-ink pt-5 text-sm sm:flex-row sm:items-baseline sm:justify-between">
+          <div className="flex flex-col gap-3 border-t-3 border-ink pt-5 text-sm sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-col gap-1">
               <span className="display text-lg">Pay Up</span>
-              {root && <span>Run by {root.operatorName}</span>}
+              {root && <span>by {root.operatorName}</span>}
             </div>
             <nav className="flex flex-wrap gap-x-5 gap-y-2">
               <Link to="/terms" className="link">Terms</Link>
