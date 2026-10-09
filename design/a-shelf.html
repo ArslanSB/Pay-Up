@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tip jar mockup A: Shelf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --glass:#E2ECE6;
+  --glass-deep:#CFDFD6;
+  --plank:#B7CCBF;
+  --ink:#1C3A2C;
+  --ink-soft:#56705F;
+  --ink-faint:#8AA093;
+  --brass:#C9A24B;
+  --brass-hi:#EDCF74;
+  --brass-lo:#8E6C22;
+  --paper:#FBF8F0;
+  --danger:#A8463A;
+  --stage:#172220;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:Figtree,system-ui,sans-serif;background:var(--stage);color:#D9E4DE;-webkit-font-smoothing:antialiased}
+.stage-head{max-width:1040px;margin:0 auto;padding:36px 20px 8px}
+.stage-head h1{font:400 26px/1.2 "Young Serif",serif;margin:0 0 8px;color:#fff}
+.stage-head p{margin:0;max-width:68ch;line-height:1.55;color:#A9BBB2;font-size:15px}
+.frames{display:flex;flex-wrap:wrap;gap:40px;justify-content:center;padding:24px 16px 64px}
+.frame-wrap h2{font:500 13px/1 Figtree,sans-serif;color:#8FA59A;margin:0 0 12px;text-align:center;letter-spacing:.02em}
+.phone{width:390px;max-width:100%;min-height:844px;border-radius:44px;background:var(--glass);color:var(--ink);box-shadow:0 0 0 10px #0B0F0E,0 30px 80px -20px rgba(0,0,0,.8);overflow:hidden;position:relative}
+.screen{padding:54px 22px 40px}
+
+/* ----- shared ----- */
+.display{font-family:"Young Serif",serif;font-weight:400}
+.muted{color:var(--ink-soft)}
+a{color:inherit;text-decoration:none}
+.topbar{display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:500;color:var(--ink-soft);margin-bottom:18px}
+.topbar a:hover,.topbar a:focus-visible{color:var(--ink)}
+:focus-visible{outline:3px solid var(--brass);outline-offset:3px;border-radius:6px}
+
+/* ----- dashboard ----- */
+.hello{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--ink);color:var(--paper);display:grid;place-items:center;font-weight:600;font-size:15px}
+.hello h1{margin:0;font-size:30px;line-height:1.1}
+.hello p{margin:2px 0 0;font-size:14px}
+.shelf-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 10px 14px;position:relative;margin-bottom:26px}
+.shelf-row::after{content:"";position:absolute;left:-6px;right:-6px;bottom:0;height:12px;border-radius:3px;background:var(--plank);box-shadow:0 6px 0 var(--glass-deep),0 14px 18px -8px rgba(28,58,44,.35)}
+.jar-card{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.jar-card .jar{width:118px}
+.jar-card b{font-weight:600;font-size:15px}
+.jar-card span{font-size:14px;color:var(--ink-soft)}
+.jar{position:relative;display:block}
+.jar svg{display:block;width:100%;height:auto}
+.jar .label{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:68%;background:var(--paper);border:1px solid rgba(28,58,44,.25);border-radius:3px;padding:5px 4px;font:400 11.5px/1.15 "Young Serif",serif;color:var(--ink);box-shadow:0 1px 0 rgba(255,255,255,.6) inset}
+.jar.big .label{font-size:19px;padding:10px 8px;width:60%}
+.jar-card.new .jar svg path.body{stroke-dasharray:5 5}
+.jar-card.new b{color:var(--ink-soft)}
+
+/* ----- jar page ----- */
+.hero{display:flex;flex-direction:column;align-items:center;margin:4px 0 10px}
+.hero .jar{width:200px}
+.balance{text-align:center;margin:10px 0 22px}
+.balance .num{font-size:38px;line-height:1;display:block}
+.balance .since{font-size:14px;margin-top:6px;display:block}
+.coin-btn{appearance:none;border:0;width:100%;padding:22px 20px;border-radius:999px;background:linear-gradient(180deg,var(--brass-hi),var(--brass) 55%,#B4893A);color:#2A1F05;font:600 20px/1 Figtree,sans-serif;display:flex;align-items:center;justify-content:center;gap:12px;cursor:pointer;box-shadow:0 5px 0 var(--brass-lo),0 18px 24px -12px rgba(28,58,44,.5);position:relative;transition:transform .08s,box-shadow .08s}
+.coin-btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--brass-lo),0 8px 14px -10px rgba(28,58,44,.5)}
+.coin-btn .coin{width:28px;height:28px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff2b8,var(--brass) 60%,var(--brass-lo));box-shadow:inset 0 0 0 2px rgba(142,108,34,.5)}
+.coin-btn small{font-weight:500;font-size:15px;opacity:.75}
+.actions{display:flex;gap:10px;margin:14px 0 30px}
+.ghost{flex:1;appearance:none;background:transparent;border:1.5px solid rgba(28,58,44,.35);color:var(--ink);border-radius:999px;padding:12px;font:500 15px Figtree,sans-serif;cursor:pointer}
+.ghost:hover{background:rgba(255,255,255,.35)}
+.log h2{font:400 15px "Young Serif",serif;color:var(--ink-soft);margin:18px 0 6px;text-align:left}
+.log ul{list-style:none;margin:0;padding:0}
+.log li{display:grid;grid-template-columns:48px 1fr auto;gap:10px;align-items:baseline;padding:10px 0;border-bottom:1px solid rgba(28,58,44,.12);font-size:15px}
+.log li time{font-variant-numeric:tabular-nums;color:var(--ink-soft);font-size:14px}
+.log li .note{color:var(--ink)}
+.log li .note.empty{color:var(--ink-faint)}
+.log li .amt{font-variant-numeric:tabular-nums;font-weight:500}
+.log li .undo{grid-column:2;font-size:13px;color:var(--ink-soft);text-decoration:underline;text-underline-offset:3px}
+.log li.settled{grid-template-columns:1fr auto;color:var(--ink-soft)}
+.log li.settled .amt{font-weight:400}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:rgba(28,58,44,.1);color:var(--ink-soft);margin-left:8px;vertical-align:middle}
+
+/* drop animation */
+.fly{position:absolute;width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff2b8,var(--brass) 60%,var(--brass-lo));pointer-events:none;animation:fly .55s cubic-bezier(.3,.7,.3,1) forwards}
+@keyframes fly{0%{transform:translate(-50%,0) scale(1);opacity:1}70%{opacity:1}100%{transform:translate(-50%,-300px) scale(.5);opacity:0}}
+.log li.fresh{animation:pop .3s ease-out}
+@keyframes pop{from{background:rgba(201,162,75,.25)}to{background:transparent}}
+@media (prefers-reduced-motion:reduce){.fly,.log li.fresh,.coin-btn{animation:none;transition:none}}
+@media (max-width:420px){.phone{border-radius:28px;box-shadow:none;width:100%}.screen{padding:28px 16px}}
+</style>
+</head>
+<body>
+<header class="stage-head">
+  <h1>A. Shelf</h1>
+  <p>The jar is the hero. Each jar is a glass mason jar on a shelf, and it visibly fills with brass coins as the balance grows. Calm sea-glass green, paper labels, one brass button. Tap it and a coin drops in.</p>
+</header>
+
+<main class="frames">
+  <section class="frame-wrap">
+    <h2>Dashboard</h2>
+    <div class="phone"><div class="screen">
+      <div class="hello">
+        <span class="avatar">A</span>
+        <div>
+          <h1 class="display">Your jars</h1>
+          <p class="muted">21,00 € unsettled across three jars</p>
+        </div>
+      </div>
+
+      <div class="shelf-row">
+        <a class="jar-card" href="#"><span class="jar" data-fill=".55" data-label="Negativity"></span><b>Negativity</b><span>12,50 € · 13 coins</span></a>
+        <a class="jar-card" href="#"><span class="jar" data-fill=".32" data-label="Swearing"></span><b>Swearing</b><span>6,50 €</span></a>
+      </div>
+      <div class="shelf-row">
+        <a class="jar-card" href="#"><span class="jar" data-fill=".08" data-label="Interrupting"></span><b>Interrupting</b><span>2,00 €</span></a>
+        <a class="jar-card new" href="#"><span class="jar" data-fill="0" data-label="+" data-new="1"></span><b>New jar</b><span>&nbsp;</span></a>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="frame-wrap">
+    <h2>Jar (owner)</h2>
+    <div class="phone" id="jarphone"><div class="screen">
+      <nav class="topbar"><a href="#">‹ Jars</a><a href="#">Share link</a></nav>
+      <div class="hero"><span class="jar big" id="bigjar" data-fill=".55" data-label="Negativity"></span></div>
+      <p class="balance">
+        <span class="num display" id="bal">12,50 €</span>
+        <span class="since muted">unsettled since 1 October <span class="pill">Public</span></span>
+      </p>
+      <button class="coin-btn" id="drop"><span class="coin"></span>Drop a coin <small>1,00 €</small></button>
+      <div class="actions"><button class="ghost">Settle up 12,50 €</button><button class="ghost">Edit jar</button></div>
+
+      <section class="log">
+        <h2>Today</h2>
+        <ul id="today">
+          <li><time>14:02</time><span class="note">complained about the weather</span><b class="amt">1,00 €</b><a class="undo" href="#">Undo</a></li>
+          <li><time>09:15</time><span class="note empty">no note</span><b class="amt">1,00 €</b></li>
+        </ul>
+        <h2>Yesterday</h2>
+        <ul>
+          <li><time>22:40</time><span class="note">said the sprint was doomed</span><b class="amt">1,00 €</b></li>
+          <li><time>17:05</time><span class="note">sighed at the standup</span><b class="amt">1,00 €</b></li>
+          <li><time>11:30</time><span class="note empty">no note</span><b class="amt">1,00 €</b></li>
+        </ul>
+        <h2>Settled 1 October</h2>
+        <ul><li class="settled"><span>8 coins, paid into the holiday fund</span><b class="amt">8,00 €</b></li></ul>
+      </section>
+    </div></div>
+  </section>
+</main>
+
+<script>
+let uid=0;
+function jarSVG(fill,isNew){
+  const id='j'+(uid++);
+  const body='M22,46 Q22,34 34,34 L86,34 Q98,34 98,46 L98,130 Q98,142 86,142 L34,142 Q22,142 22,130 Z';
+  const top=40,bot=140;const coinsTop=bot-(bot-top)*Math.min(1,Math.max(0,fill));
+  let coins='';let row=0;
+  for(let y=bot-5;y>coinsTop;y-=6.5,row++){
+    const st=row%2?9:0;
+    for(let x=34+st;x<=90;x+=20){coins+=`<ellipse cx="${x}" cy="${y.toFixed(1)}" rx="12" ry="4.2" fill="url(#g${id})" stroke="#8E6C22" stroke-width=".9"/>`;}
+  }
+  return `<svg viewBox="0 0 120 150" aria-hidden="true">
+  <defs><linearGradient id="g${id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#F0D57E"/><stop offset="1" stop-color="#B48D36"/></linearGradient>
+  <clipPath id="c${id}"><path d="${body}"/></clipPath></defs>
+  ${isNew?'':'<rect x="33" y="6" width="54" height="17" rx="5" fill="#C9A24B" stroke="#8E6C22" stroke-width="1.2"/><rect x="37" y="21" width="46" height="12" fill="rgba(255,255,255,.4)" stroke="#1C3A2C" stroke-width="1.6"/>'}
+  <path class="body" d="${body}" fill="rgba(255,255,255,.42)" stroke="#1C3A2C" stroke-width="2"/>
+  <g clip-path="url(#c${id})">${coins}</g>
+  <path d="M30,52 L30,124" stroke="rgba(255,255,255,.75)" stroke-width="4" stroke-linecap="round"/>
+  <path class="body" d="${body}" fill="none" stroke="#1C3A2C" stroke-width="2"/>
+  </svg>`;
+}
+function renderJar(el){
+  const f=parseFloat(el.dataset.fill||0);
+  el.innerHTML=jarSVG(f,!!el.dataset.new)+`<span class="label">${el.dataset.label}</span>`;
+}
+document.querySelectorAll('.jar').forEach(renderJar);
+
+// tap interaction
+let balance=12.5,fill=.55;
+const fmt=n=>n.toFixed(2).replace('.',',')+' €';
+document.getElementById('drop').addEventListener('click',e=>{
+  const phone=document.getElementById('jarphone');
+  const r=e.currentTarget.getBoundingClientRect(),pr=phone.getBoundingClientRect();
+  const c=document.createElement('span');c.className='fly';
+  c.style.left=(r.left-pr.left+r.width/2)+'px';c.style.top=(r.top-pr.top+10)+'px';
+  phone.appendChild(c);setTimeout(()=>c.remove(),600);
+  balance+=1;fill=Math.min(1,fill+.03);
+  document.getElementById('bal').textContent=fmt(balance);
+  const big=document.getElementById('bigjar');big.dataset.fill=fill;setTimeout(()=>renderJar(big),350);
+  const li=document.createElement('li');li.className='fresh';
+  const t=new Date();li.innerHTML=`<time>${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}</time><span class="note empty">no note</span><b class="amt">1,00 €</b><a class="undo" href="#">Undo</a>`;
+  const ul=document.getElementById('today');ul.querySelector('.undo')?.remove();ul.prepend(li);
+});
+</script>
+</body>
+</html>

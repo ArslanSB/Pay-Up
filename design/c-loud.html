@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tip jar mockup C: Loud</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --yellow:#FFD83D;
+  --pink:#FF5DA2;
+  --blue:#2F5BFF;
+  --mint:#9FE7C2;
+  --white:#FFFFFF;
+  --ink:#000000;
+  --stage:#141414;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:"Bricolage Grotesque",system-ui,sans-serif;background:var(--stage);color:#E6E6E6;-webkit-font-smoothing:antialiased}
+.stage-head{max-width:1040px;margin:0 auto;padding:36px 20px 8px}
+.stage-head h1{font-size:26px;font-weight:800;margin:0 0 8px;color:#fff;letter-spacing:-.01em}
+.stage-head p{margin:0;max-width:66ch;line-height:1.55;color:#B5B5B5;font-size:15px}
+.frames{display:flex;flex-wrap:wrap;gap:40px;justify-content:center;padding:24px 16px 64px}
+.frame-wrap h2{font-size:13px;font-weight:600;color:#9A9A9A;margin:0 0 12px;text-align:center}
+.phone{width:390px;max-width:100%;min-height:844px;border-radius:44px;background:var(--yellow);color:var(--ink);box-shadow:0 0 0 10px #0B0B0B,0 30px 80px -20px rgba(0,0,0,.8);overflow:hidden;position:relative}
+.screen{padding:54px 20px 40px}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+
+.block{border:3px solid var(--ink);background:var(--white);box-shadow:6px 6px 0 var(--ink)}
+.topbar{display:flex;justify-content:space-between;font-weight:600;font-size:16px;margin-bottom:22px}
+.topbar a{text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:2px}
+
+/* ----- dashboard ----- */
+.h-big{font-size:56px;line-height:.92;font-weight:800;letter-spacing:-.03em;margin:0 0 6px}
+.sub{font-size:16px;font-weight:600;margin:0 0 24px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:18px 18px}
+.tile{display:flex;flex-direction:column;justify-content:space-between;min-height:168px;padding:14px 14px 12px;border:3px solid var(--ink);box-shadow:6px 6px 0 var(--ink);transition:transform .08s,box-shadow .08s}
+.tile:active{transform:translate(4px,4px);box-shadow:2px 2px 0 var(--ink)}
+.tile h3{font-size:24px;line-height:.95;font-weight:800;letter-spacing:-.02em;margin:0}
+.tile .owe{font-size:15px;font-weight:600;line-height:1.2}
+.tile .owe b{display:block;font-size:22px;font-weight:800;letter-spacing:-.01em}
+.tile.pink{background:var(--pink)}
+.tile.blue{background:var(--blue);color:#fff}
+.tile.mint{background:var(--mint)}
+.tile.new{background:transparent;border-style:dashed;box-shadow:none;justify-content:center;align-items:center;text-align:center}
+.tile.new h3{font-size:20px}
+.tile.wide{grid-column:1/-1;min-height:120px;flex-direction:row;align-items:flex-end}
+.tile.wide .owe{text-align:right}
+
+/* ----- jar page ----- */
+.title{font-size:46px;line-height:.92;font-weight:800;letter-spacing:-.03em;margin:0 0 14px}
+.desc{display:inline-block;border:3px solid var(--ink);background:var(--white);padding:8px 12px;font-weight:600;font-size:15px;margin-bottom:22px;transform:rotate(-1.2deg)}
+.pay{position:relative;appearance:none;width:100%;border:3px solid var(--ink);background:var(--pink);color:var(--ink);box-shadow:8px 8px 0 var(--ink);padding:52px 20px;font:800 44px/1 "Bricolage Grotesque",sans-serif;letter-spacing:-.02em;cursor:pointer;transition:transform .07s,box-shadow .07s;margin-bottom:34px}
+.pay:active{transform:translate(5px,5px);box-shadow:3px 3px 0 var(--ink)}
+.sticker{position:absolute;right:12px;bottom:-24px;background:var(--white);border:3px solid var(--ink);padding:8px 12px;font-size:17px;font-weight:600;transform:rotate(-4deg);box-shadow:4px 4px 0 var(--ink);line-height:1.1}
+.sticker b{display:block;font-size:24px;font-weight:800;letter-spacing:-.01em}
+.sticker span{font-size:13px}
+.list{display:flex;flex-direction:column;gap:12px;margin-bottom:24px}
+.day{font-size:14px;font-weight:600;margin:10px 0 -4px}
+.row{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px 14px;font-size:16px}
+.row time{font-weight:800;font-variant-numeric:tabular-nums}
+.row .note{font-weight:400}
+.row .note.empty{color:#666}
+.row .amt{font-weight:800;font-variant-numeric:tabular-nums}
+.row .undo{grid-column:2/-1;font-size:14px;font-weight:600;color:var(--blue);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:2px}
+.list .row{box-shadow:none}
+.row.settled{background:var(--mint);grid-template-columns:1fr auto;font-weight:600}
+.btn{appearance:none;width:100%;border:3px solid var(--ink);background:var(--ink);color:var(--yellow);padding:18px;font:800 22px/1 "Bricolage Grotesque",sans-serif;box-shadow:6px 6px 0 var(--ink);cursor:pointer;letter-spacing:-.01em;transition:transform .07s,box-shadow .07s}
+.btn:active{transform:translate(4px,4px);box-shadow:2px 2px 0 var(--ink)}
+.btn.ghost{background:var(--white);color:var(--ink);font-size:17px;padding:14px;font-weight:600}
+.btn-row{display:flex;gap:14px;margin-top:14px}
+
+/* pop animation */
+.plus{position:absolute;left:50%;top:40%;transform:translate(-50%,0);font:800 40px/1 "Bricolage Grotesque",sans-serif;color:var(--ink);pointer-events:none;animation:pop .6s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes pop{0%{transform:translate(-50%,0) scale(.6);opacity:0}25%{opacity:1;transform:translate(-50%,-40px) scale(1.15)}100%{transform:translate(-50%,-130px) scale(1);opacity:0}}
+@media (prefers-reduced-motion:reduce){.plus{animation:none;display:none}.pay,.btn,.tile{transition:none}}
+@media (max-width:420px){.phone{border-radius:28px;box-shadow:none;width:100%}.screen{padding:28px 16px}}
+</style>
+</head>
+<body>
+<header class="stage-head">
+  <h1>C. Loud</h1>
+  <p>Swear-jar attitude. A poster, not a ledger: butter yellow, one hot pink pay button you can't miss, hard black shadows, chunky type. It doesn't ask you to feel bad, it asks you to pay up. Tap the button.</p>
+</header>
+
+<main class="frames">
+  <section class="frame-wrap">
+    <h2>Dashboard</h2>
+    <div class="phone"><div class="screen">
+      <h1 class="h-big">Your<br>jars</h1>
+      <p class="sub">21,00 € owed. Ouch.</p>
+      <div class="tiles">
+        <a class="tile pink wide" href="#"><h3>Negativity<br>jar</h3><div class="owe">13 tips<b>12,50 €</b></div></a>
+        <a class="tile blue" href="#"><h3>Swear jar</h3><div class="owe">13 tips<b>6,50 €</b></div></a>
+        <a class="tile mint" href="#"><h3>Interrupting</h3><div class="owe">1 tip<b>2,00 €</b></div></a>
+        <a class="tile new" href="#"><h3>+ New jar</h3></a>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="frame-wrap">
+    <h2>Jar (owner)</h2>
+    <div class="phone" id="jarphone"><div class="screen">
+      <nav class="topbar"><a href="#">‹ Jars</a><a href="#">Share link</a></nav>
+      <h1 class="title">Negativity<br>jar</h1>
+      <p class="desc">Every gripe costs 1 €. Public.</p>
+
+      <button class="pay" id="pay">Pay 1 €
+        <span class="sticker"><span>you owe</span><b id="bal">12,50 €</b></span>
+      </button>
+
+      <div class="list">
+        <p class="day">Today</p>
+        <div id="today" style="display:contents">
+          <div class="row block"><time>14:02</time><span class="note">complained about the weather</span><b class="amt">1 €</b><a class="undo" href="#">Undo</a></div>
+          <div class="row block"><time>09:15</time><span class="note empty">no note</span><b class="amt">1 €</b></div>
+        </div>
+        <p class="day">Yesterday</p>
+        <div class="row block"><time>22:40</time><span class="note">said the sprint was doomed</span><b class="amt">1 €</b></div>
+        <div class="row block"><time>17:05</time><span class="note">sighed at the standup</span><b class="amt">1 €</b></div>
+        <div class="row block"><time>11:30</time><span class="note empty">no note</span><b class="amt">1 €</b></div>
+        <p class="day">Settled 1 October</p>
+        <div class="row block settled"><span>8 tips, paid into the holiday fund</span><b class="amt">8 €</b></div>
+      </div>
+
+      <button class="btn">Settle 12,50 €</button>
+      <div class="btn-row"><button class="btn ghost">Edit jar</button></div>
+    </div></div>
+  </section>
+</main>
+
+<script>
+let balance=12.5;
+const fmt=n=>n.toFixed(2).replace('.',',')+' €';
+document.getElementById('pay').addEventListener('click',e=>{
+  balance+=1;document.getElementById('bal').textContent=fmt(balance);
+  const phone=document.getElementById('jarphone');
+  const r=e.currentTarget.getBoundingClientRect(),pr=phone.getBoundingClientRect();
+  const p=document.createElement('span');p.className='plus';p.textContent='+1 €';
+  p.style.top=(r.top-pr.top+r.height/2-20)+'px';phone.appendChild(p);setTimeout(()=>p.remove(),700);
+  const t=new Date();const d=document.createElement('div');d.className='row block';
+  d.innerHTML=`<time>${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}</time><span class="note empty">no note</span><b class="amt">1 €</b><a class="undo" href="#">Undo</a>`;
+  const today=document.getElementById('today');today.querySelector('.undo')?.remove();today.prepend(d);
+});
+</script>
+</body>
+</html>

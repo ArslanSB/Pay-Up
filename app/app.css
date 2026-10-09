@@ -1,0 +1,57 @@
+@import "tailwindcss";
+@import "@fontsource-variable/bricolage-grotesque";
+
+@theme {
+  --color-*: initial;
+  --color-yellow: #ffd83d;
+  --color-pink: #ff5da2;
+  --color-blue: #2f5bff;
+  --color-mint: #9fe7c2;
+  --color-white: #ffffff;
+  --color-ink: #000000;
+  --color-muted: #555555;
+  --font-sans: "Bricolage Grotesque Variable", system-ui, sans-serif;
+}
+
+@layer base {
+  /* Tailwind 4 gives buttons cursor: default; this app wants the hand on anything clickable. */
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-blue);
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  .panel { border: 3px solid var(--color-ink); background: var(--color-white); }
+  .raised { box-shadow: 6px 6px 0 var(--color-ink); transition: transform 0.07s, box-shadow 0.07s; }
+  .raised:active { transform: translate(4px, 4px); box-shadow: 2px 2px 0 var(--color-ink); }
+  .raised-lg { box-shadow: 8px 8px 0 var(--color-ink); transition: transform 0.07s, box-shadow 0.07s; }
+  .raised-lg:active { transform: translate(5px, 5px); box-shadow: 3px 3px 0 var(--color-ink); }
+  .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0.75rem 1rem; border: 3px solid var(--color-ink); font-weight: 800; letter-spacing: -0.01em; cursor: pointer; }
+  .btn-pink { background: var(--color-pink); color: var(--color-ink); }
+  .btn-ink { background: var(--color-ink); color: var(--color-yellow); }
+  .btn-ghost { background: var(--color-white); color: var(--color-ink); font-weight: 600; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .dashed { border: 3px dashed var(--color-ink); }
+  .display { font-weight: 800; line-height: 0.92; letter-spacing: -0.03em; }
+  .tnum { font-variant-numeric: tabular-nums; }
+  .sticker { transform: rotate(-4deg); }
+  .tilt { transform: rotate(-1.2deg); }
+  .link { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 2px; font-weight: 600; }
+  .pop { position: absolute; left: 50%; top: 50%; font-weight: 800; font-size: 2.5rem; pointer-events: none; animation: pop 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+}
+
+@keyframes pop {
+  0% { transform: translate(-50%, -50%) scale(0.6); opacity: 0; }
+  25% { transform: translate(-50%, -90px) scale(1.15); opacity: 1; }
+  100% { transform: translate(-50%, -180px) scale(1); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pop { animation: none; display: none; }
+  .raised, .raised-lg { transition: none; }
+}

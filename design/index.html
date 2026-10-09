@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tip jar design variants</title>
+<style>
+:root{--bg:#F3F4F2;--ink:#1A1A1A;--muted:#5C615E}
+body{margin:0;font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+main{max-width:980px;margin:0 auto;padding:48px 20px 80px}
+h1{font-size:28px;margin:0 0 6px}
+p.lead{color:var(--muted);margin:0 0 36px;max-width:60ch;line-height:1.5}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+a.card{display:block;background:#fff;border:1px solid #DADDDA;border-radius:12px;overflow:hidden;color:inherit;text-decoration:none}
+a.card:hover{border-color:#999}
+.swatch{height:120px;display:flex;align-items:flex-end;padding:14px;font-weight:700;font-size:22px}
+.a .swatch{background:#E2ECE6;color:#1C3A2C;font-family:Georgia,serif;font-weight:400}
+.b .swatch{background:#3B4B52;color:#FAFAF5;font-family:ui-monospace,monospace}
+.c .swatch{background:#FFD83D;color:#000;font-weight:800;letter-spacing:-.02em}
+.body{padding:14px 16px 18px}
+.body h2{font-size:17px;margin:0 0 6px}
+.body p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+.note{margin-top:36px;padding:16px 18px;background:#fff;border:1px solid #DADDDA;border-radius:12px;font-size:14px;line-height:1.55;color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+  <h1>Tip jar: three directions</h1>
+  <p class="lead">Each page shows the dashboard and the owner's jar screen at phone width. The tap button works in all three so you can feel the interaction. These are throwaway mockups, not the app.</p>
+  <div class="grid">
+    <a class="card a" href="a-shelf.html"><div class="swatch">Shelf</div><div class="body"><h2>A. Shelf</h2><p>Illustrated glass jars that fill with coins. Calm, tactile, kitchen-counter feel.</p></div></a>
+    <a class="card b" href="b-receipt.html"><div class="swatch">Receipt</div><div class="body"><h2>B. Receipt</h2><p>Each jar is a printed receipt with a total due. Wry, honest, itemised. One red paid stamp.</p></div></a>
+    <a class="card c" href="c-loud.html"><div class="swatch">Loud</div><div class="body"><h2>C. Loud</h2><p>Poster energy. Hot pink pay button, hard shadows, chunky type. Pay up, no guilt.</p></div></a>
+  </div>
+  <p class="note">Not shown: the public read-only page (the jar screen without the buttons), the sign-in landing, and the create/edit form. Those follow whichever direction wins.</p>
+</main>
+</body>
+</html>

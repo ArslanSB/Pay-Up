@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tip jar mockup B: Receipt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --counter:#3B4B52;
+  --counter-deep:#2C393F;
+  --paper:#FAFAF5;
+  --paper-shadow:#D9D9D2;
+  --ink:#1F1F1F;
+  --ink-faded:#8C8C85;
+  --red:#D33A2C;
+  --key:#1F1F1F;
+  --key-edge:#0A0A0A;
+  --stage:#1B2326;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:"Azeret Mono",ui-monospace,monospace;background:var(--stage);color:#CFD8D6;-webkit-font-smoothing:antialiased}
+.stage-head{max-width:1040px;margin:0 auto;padding:36px 20px 8px}
+.stage-head h1{font-size:24px;font-weight:700;margin:0 0 8px;color:#fff}
+.stage-head p{margin:0;max-width:62ch;line-height:1.6;color:#A5B3B0;font-size:14px}
+.frames{display:flex;flex-wrap:wrap;gap:40px;justify-content:center;padding:24px 16px 64px}
+.frame-wrap h2{font-size:12px;font-weight:500;color:#8FA0A0;margin:0 0 12px;text-align:center}
+.phone{width:390px;max-width:100%;min-height:844px;border-radius:44px;background:var(--counter);background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:6px 6px;color:var(--ink);box-shadow:0 0 0 10px #0B0F0E,0 30px 80px -20px rgba(0,0,0,.8);overflow:hidden;position:relative}
+.screen{padding:54px 22px 40px;display:flex;flex-direction:column;min-height:844px}
+:focus-visible{outline:3px solid #fff;outline-offset:3px}
+a{color:inherit;text-decoration:none}
+
+/* ----- receipt paper ----- */
+.receipt{background:var(--paper);color:var(--ink);padding:22px 18px 26px;position:relative;filter:drop-shadow(0 10px 14px rgba(0,0,0,.35));font-size:13px;line-height:1.5}
+.receipt.serrated{clip-path:var(--serr)}
+.receipt h1{font-size:18px;font-weight:800;text-align:center;margin:0 0 2px;letter-spacing:.02em}
+.receipt .sub{text-align:center;color:var(--ink-faded);margin:0 0 12px}
+.rule{border:0;border-top:2px dashed var(--ink);margin:12px 0;opacity:.75}
+.line{display:flex;align-items:baseline;gap:8px}
+.line .k{white-space:nowrap}
+.line .dots{flex:1;border-bottom:2px dotted var(--ink);opacity:.5;transform:translateY(-4px)}
+.line .v{white-space:nowrap;font-variant-numeric:tabular-nums}
+.entry{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:5px 0}
+.entry time{color:var(--ink-faded);font-size:12px}
+.entry .note{grid-column:1;padding-left:14px;text-indent:-14px}
+.entry .note::before{content:"· "}
+.entry .amt{grid-row:1;grid-column:2;font-variant-numeric:tabular-nums}
+.entry .undo{grid-column:1/-1;font-size:11px;color:var(--ink-faded);text-decoration:underline;text-underline-offset:3px;padding-left:14px}
+.total{font-size:16px;font-weight:800;margin-top:4px}
+.total .dots{border-bottom-width:3px;opacity:.9}
+.settled{color:var(--ink-faded);position:relative;margin-top:4px}
+.stamp{display:inline-block;margin:2px 0 8px 4px;transform:rotate(-6deg);border:3px solid var(--red);color:var(--red);font-weight:800;font-size:15px;padding:3px 8px;letter-spacing:.06em;mix-blend-mode:multiply;opacity:.85;border-radius:3px}
+.receipt .foot{text-align:center;color:var(--ink-faded);font-size:11px;margin-top:14px}
+
+/* ----- counter controls ----- */
+.topbar{display:flex;justify-content:space-between;color:#DCE4E2;font-size:13px;font-weight:500;margin-bottom:18px}
+.topbar a:hover{color:#fff;text-decoration:underline;text-underline-offset:3px}
+.key{appearance:none;border:0;width:100%;background:var(--key);color:var(--paper);font:700 20px/1 "Azeret Mono",monospace;padding:24px 18px;border-radius:10px;box-shadow:0 7px 0 var(--key-edge),0 16px 20px -8px rgba(0,0,0,.6);cursor:pointer;transition:transform .07s,box-shadow .07s;margin-top:auto;position:relative}
+.key small{display:block;font-weight:400;font-size:12px;color:#B9C2C0;margin-top:6px}
+.key:active{transform:translateY(5px);box-shadow:0 2px 0 var(--key-edge),0 8px 12px -8px rgba(0,0,0,.6)}
+.key.secondary{background:var(--paper);color:var(--ink);box-shadow:0 5px 0 var(--paper-shadow),0 12px 16px -8px rgba(0,0,0,.5);font-size:14px;padding:16px 10px}
+.key.secondary:active{transform:translateY(4px);box-shadow:0 1px 0 var(--paper-shadow)}
+.row{display:flex;gap:10px;margin-top:12px}
+.row .key{margin-top:0}
+.stub{margin-bottom:18px;display:block}
+.stub .receipt{padding:16px 16px 18px}
+.stub h1{text-align:left;font-size:15px;margin-bottom:0}
+.stub .sub{text-align:left;margin-bottom:8px}
+.stub .total{font-size:14px}
+.stub.new .receipt{background:transparent;color:#DCE4E2;border:2px dashed rgba(255,255,255,.45);filter:none;text-align:center;padding:18px}
+.counter-title{color:#fff;font-size:20px;font-weight:700;margin:0 0 2px}
+.counter-sub{color:#AAB8B5;font-size:12px;margin:0 0 22px}
+
+/* print animation */
+.entry.fresh{animation:print .35s steps(6) both}
+@keyframes print{from{clip-path:inset(0 0 100% 0);opacity:.4}to{clip-path:inset(0);opacity:1}}
+.key.secondary span{font-weight:700}
+@media (prefers-reduced-motion:reduce){.entry.fresh{animation:none}.key{transition:none}}
+@media (max-width:420px){.phone{border-radius:28px;box-shadow:none;width:100%}.screen{padding:28px 16px}}
+</style>
+</head>
+<body>
+<header class="stage-head">
+  <h1>B. Receipt</h1>
+  <p>The jar is a thermal receipt on a café counter. Every tip is a printed line, the balance is the total due, and settling stamps the slip paid. Monospace because the receipt is the idea, not decoration. The big key below is the cash register.</p>
+</header>
+
+<main class="frames">
+  <section class="frame-wrap">
+    <h2>Dashboard</h2>
+    <div class="phone"><div class="screen">
+      <p class="counter-title">Your jars</p>
+      <p class="counter-sub">21,00 € due across 3 slips</p>
+
+      <a class="stub" href="#"><div class="receipt serrated">
+        <h1>NEGATIVITY JAR</h1><p class="sub">1,00 € per slip</p>
+        <div class="line"><span class="k">Since 1 Oct</span><span class="dots"></span><span class="v">13 slips</span></div>
+        <div class="line total"><span class="k">TOTAL DUE</span><span class="dots"></span><span class="v">12,50 €</span></div>
+      </div></a>
+      <a class="stub" href="#"><div class="receipt serrated">
+        <h1>SWEAR JAR</h1><p class="sub">0,50 € per slip</p>
+        <div class="line"><span class="k">Since 28 Sep</span><span class="dots"></span><span class="v">13 slips</span></div>
+        <div class="line total"><span class="k">TOTAL DUE</span><span class="dots"></span><span class="v">6,50 €</span></div>
+      </div></a>
+      <a class="stub" href="#"><div class="receipt serrated">
+        <h1>INTERRUPTING</h1><p class="sub">2,00 € per slip</p>
+        <div class="line"><span class="k">Since 6 Oct</span><span class="dots"></span><span class="v">1 slip</span></div>
+        <div class="line total"><span class="k">TOTAL DUE</span><span class="dots"></span><span class="v">2,00 €</span></div>
+      </div></a>
+      <a class="stub new" href="#"><div class="receipt">+ New jar</div></a>
+    </div></div>
+  </section>
+
+  <section class="frame-wrap">
+    <h2>Jar (owner)</h2>
+    <div class="phone"><div class="screen">
+      <nav class="topbar"><a href="#">‹ Jars</a><a href="#">Share link</a></nav>
+      <div class="receipt serrated">
+        <h1>NEGATIVITY JAR</h1>
+        <p class="sub">1,00 € per slip · public</p>
+        <hr class="rule">
+        <div id="lines">
+          <div class="entry"><time>Wed 8 Oct 14:02</time><span class="amt">1,00</span><span class="note">complained about the weather</span><a class="undo" href="#">undo last slip</a></div>
+          <div class="entry"><time>Wed 8 Oct 09:15</time><span class="amt">1,00</span></div>
+          <div class="entry"><time>Tue 7 Oct 22:40</time><span class="amt">1,00</span><span class="note">said the sprint was doomed</span></div>
+          <div class="entry"><time>Tue 7 Oct 17:05</time><span class="amt">1,00</span><span class="note">sighed at the standup</span></div>
+          <div class="entry"><time>Tue 7 Oct 11:30</time><span class="amt">1,00</span></div>
+          <div class="entry"><time>Mon 6 Oct 20:12</time><span class="amt">1,00</span><span class="note">the lift again</span></div>
+        </div>
+        <hr class="rule">
+        <div class="line"><span class="k">Slips</span><span class="dots"></span><span class="v" id="count">13</span></div>
+        <div class="line total"><span class="k">TOTAL DUE</span><span class="dots"></span><span class="v" id="bal">12,50 €</span></div>
+        <hr class="rule">
+        <div class="settled">
+          <span class="stamp">PAID 1 OCT</span>
+          <div class="line"><span class="k">8 slips</span><span class="dots"></span><span class="v">8,00 €</span></div>
+          <div class="entry"><span class="note">holiday fund</span></div>
+        </div>
+        <p class="foot">thank you, come again</p>
+      </div>
+
+      <button class="key" id="add">ADD 1,00 €<small>tap when you catch yourself</small></button>
+      <div class="row">
+        <button class="key secondary">Settle <span>12,50 €</span></button>
+        <button class="key secondary">Edit</button>
+      </div>
+    </div></div>
+  </section>
+</main>
+
+<script>
+// serrated edges via clip-path
+(function(){
+  const pts=[],n=40,step=100/n;
+  for(let i=0;i<=n;i++){pts.push(`${(i*step).toFixed(2)}% ${i%2?'0px':'7px'}`);}
+  for(let i=n;i>=0;i--){pts.push(`${(i*step).toFixed(2)}% calc(100% - ${i%2?'0px':'7px'})`);}
+  document.documentElement.style.setProperty('--serr',`polygon(${pts.join(',')})`);
+})();
+let balance=12.5,count=13;
+const fmt=n=>n.toFixed(2).replace('.',',')+' €';
+const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+document.getElementById('add').addEventListener('click',()=>{
+  balance+=1;count+=1;
+  document.getElementById('bal').textContent=fmt(balance);
+  document.getElementById("count").textContent=count;
+  const t=new Date();
+  const el=document.createElement('div');el.className='entry fresh';
+  el.innerHTML=`<time>${days[t.getDay()]} ${t.getDate()} Oct ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}</time><span class="amt">1,00</span><a class="undo" href="#">undo last slip</a>`;
+  const lines=document.getElementById('lines');lines.querySelector('.undo')?.remove();lines.prepend(el);
+});
+</script>
+</body>
+</html>

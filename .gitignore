@@ -1,0 +1,8 @@
+node_modules
+build
+.react-router
+data
+.env
+.DS_Store
+.playwright-mcp
+.superpowers
