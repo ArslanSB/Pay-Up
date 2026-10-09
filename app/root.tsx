@@ -1,12 +1,20 @@
 import type { ReactNode } from "react";
-import { isRouteErrorResponse, Link, Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
+import { isRouteErrorResponse, Link, Links, Meta, Outlet, Scripts, ScrollRestoration, useRouteLoaderData } from "react-router";
 import type { Route } from "./+types/root";
+import { env } from "./lib/env.server";
 import "./app.css";
+
+/** Operator identity for the footer, so every page says who runs the site and how to reach them. */
+export function loader() {
+  const e = env();
+  return { operatorName: e.operatorName, contactEmail: e.contactEmail };
+}
 
 const TZ_SCRIPT =
   'try{document.cookie="tz="+encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone)+";path=/;max-age=31536000;samesite=lax"}catch(e){}';
 
 export function Layout({ children }: { children: ReactNode }) {
+  const root = useRouteLoaderData<typeof loader>("root");
   return (
     <html lang="en">
       <head>
@@ -23,9 +31,11 @@ export function Layout({ children }: { children: ReactNode }) {
       </head>
       <body className="flex min-h-screen flex-col bg-yellow font-sans text-ink">
         <div className="mx-auto w-full max-w-[720px] flex-1 px-4 pb-10 pt-8">{children}</div>
-        <footer className="mx-auto flex w-full max-w-[720px] gap-5 px-4 pb-10 text-sm">
+        <footer className="mx-auto flex w-full max-w-[720px] flex-wrap gap-x-5 gap-y-2 px-4 pb-10 text-sm">
           <Link to="/terms" className="link">Terms</Link>
           <Link to="/privacy" className="link">Privacy and cookies</Link>
+          {root && <span>Run by {root.operatorName}</span>}
+          {root?.contactEmail && <a href={`mailto:${root.contactEmail}`} className="link">Contact: {root.contactEmail}</a>}
         </footer>
         <ScrollRestoration />
         <Scripts />

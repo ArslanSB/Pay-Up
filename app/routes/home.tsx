@@ -60,8 +60,10 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           {none && <p className="font-semibold">Sign-in isn't set up yet.</p>}
           {!none && (
             <p className="text-sm">
-              Signing in with Google or GitHub only tells Pay Up who you are: it receives your name, email address and profile picture, nothing else,
-              and never posts on your behalf. The <a href={`${appUrl}/privacy`} className="link">privacy policy</a> has the details.
+              By continuing, you authorise Pay Up to receive your Google or GitHub account name, email address and profile picture. Pay Up uses
+              this information solely to create your account, keep you signed in and show your name on your own pages. It does not request,
+              access or store any other data from your Google or GitHub account, and never posts on your behalf. Details are in the{" "}
+              <a href={`${appUrl}/privacy`} className="link">privacy policy</a>.
             </p>
           )}
           {!none && (

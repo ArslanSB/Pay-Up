@@ -16,3 +16,10 @@ describe("legal pages", () => {
     expect(privacyMeta()).toContainEqual({ title: "Privacy and cookies" });
   });
 });
+
+describe("root loader", () => {
+  it("exposes the operator identity for the footer", async () => {
+    const { loader } = await import("../root");
+    expect(loader()).toEqual({ operatorName: "[operator name not set]", contactEmail: null });
+  });
+});
