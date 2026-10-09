@@ -15,8 +15,9 @@ export function DemoJar() {
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      <p className="display text-3xl">Doom jar</p>
+    <div className="relative flex flex-col gap-3 pt-3">
+      <span className="sticker panel absolute -top-1 right-0 px-2 py-1 text-xs font-extrabold" aria-hidden="true">Demo</span>
+      <p className="display text-2xl">Doom jar</p>
       <p className="panel tilt inline-block self-start px-3 py-2 text-sm font-semibold">Any forecast of failure is 5 €. Thoughts count.</p>
       <div className="relative mb-8">
         <button type="button" onClick={pay} className="btn btn-pink raised-lg display relative w-full py-12 text-[40px]" aria-label={`Pay ${AMOUNT} € into the demo jar`}>
@@ -30,7 +31,7 @@ export function DemoJar() {
           <b className="display tnum block text-2xl">{count * AMOUNT} €</b>
         </span>
       </div>
-      <p className="text-sm">Try it. This jar is a demo and keeps nothing.</p>
+      <p className="text-sm">Try it. Nothing is saved.</p>
     </div>
   );
 }

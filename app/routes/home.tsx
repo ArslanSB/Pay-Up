@@ -41,7 +41,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
   const none = !providers.google && !providers.github;
   return (
     <main className="flex flex-col gap-12">
-      <header className="grid gap-8 sm:grid-cols-[1.1fr_0.9fr] sm:grid-rows-[auto_auto] sm:gap-x-10">
+      <header className="grid gap-8 sm:grid-cols-[1.1fr_0.9fr] sm:grid-rows-[auto_auto] sm:gap-x-10 sm:gap-y-12">
         <div className="flex flex-col gap-5">
           <p className="display text-2xl">Pay Up</p>
           <h1 className="display text-[56px]">Catch yourself.<br />Pay up.</h1>
@@ -49,42 +49,37 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             Pay Up is a fine jar for yourself. Make a jar for a habit you want to break, fine yourself every time you slip, and settle up however you like.
           </p>
         </div>
-        <div className="sm:col-start-2 sm:row-span-2 sm:row-start-1">
+        <div className="sm:col-start-2 sm:row-start-1">
           <DemoJar />
         </div>
-        <div className="flex flex-col gap-4 sm:col-start-1">
+        <div className="flex flex-col gap-4 sm:col-start-1 sm:row-start-2">
           {signInError && <p className="panel bg-pink px-3 py-2 font-semibold">Sign-in didn't complete. Try again.</p>}
           {deleted && <p className="panel bg-mint px-3 py-2 font-semibold">Your account is gone. Thanks for playing.</p>}
           {providers.google && <a href="/auth/google" className="btn btn-ink raised">Continue with Google</a>}
           {providers.github && <a href="/auth/github" className="btn btn-ghost raised">Continue with GitHub</a>}
           {none && <p className="font-semibold">Sign-in isn't set up yet.</p>}
           {!none && (
-            <p className="text-sm">
-              By continuing, you authorise Pay Up to receive your Google or GitHub account name, email address and profile picture. Pay Up uses
-              this information solely to create your account, keep you signed in and show your name on your own pages. It does not request,
-              access or store any other data from your Google or GitHub account, and never posts on your behalf. Details are in the{" "}
-              <a href={`${appUrl}/privacy`} className="link">privacy policy</a>.
-            </p>
-          )}
-          {!none && (
-            <p className="text-sm">
-              By continuing you accept the <a href={`${appUrl}/terms`} className="link">terms</a> and the <a href={`${appUrl}/privacy`} className="link">privacy and cookies page</a>.
+            <p className="max-w-[46ch] text-sm leading-snug">
+              By continuing you accept the <a href={`${appUrl}/terms`} className="link">terms</a> and the{" "}
+              <a href={`${appUrl}/privacy`} className="link">privacy and cookies page</a>, and authorise Pay Up to receive your Google or
+              GitHub account name, email address and profile picture. Pay Up uses them solely to create your account, keep you signed in and
+              show your name on your own pages. It does not request, access or store any other data from your account, and never posts on
+              your behalf.
             </p>
           )}
         </div>
+        <section className="flex flex-col gap-4 sm:col-start-2 sm:row-start-2">
+          <h2 className="text-xl font-extrabold">How it works</h2>
+          <ol className="flex flex-col gap-4">
+            {STEPS.map((text, i) => (
+              <li key={i} className="flex gap-4">
+                <b className="display w-8 shrink-0 text-[40px] leading-none">{i + 1}</b>
+                <p className="leading-snug">{text}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
       </header>
-
-      <section className="flex flex-col gap-5">
-        <h2 className="text-xl font-extrabold">How it works</h2>
-        <ol className="grid gap-6 sm:grid-cols-3">
-          {STEPS.map((text, i) => (
-            <li key={i} className="flex gap-4 sm:flex-col sm:gap-2">
-              <b className="display text-[44px] leading-none">{i + 1}</b>
-              <p className="leading-snug">{text}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
     </main>
   );
 }

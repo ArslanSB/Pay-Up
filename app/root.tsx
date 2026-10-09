@@ -31,11 +31,18 @@ export function Layout({ children }: { children: ReactNode }) {
       </head>
       <body className="flex min-h-screen flex-col bg-yellow font-sans text-ink">
         <div className="mx-auto w-full max-w-[720px] flex-1 px-4 pb-10 pt-8">{children}</div>
-        <footer className="mx-auto flex w-full max-w-[720px] flex-wrap gap-x-5 gap-y-2 px-4 pb-10 text-sm">
-          <Link to="/terms" className="link">Terms</Link>
-          <Link to="/privacy" className="link">Privacy and cookies</Link>
-          {root && <span>Run by {root.operatorName}</span>}
-          {root?.contactEmail && <a href={`mailto:${root.contactEmail}`} className="link">Contact: {root.contactEmail}</a>}
+        <footer className="mx-auto w-full max-w-[720px] px-4 pb-10">
+          <div className="flex flex-col gap-3 border-t-3 border-ink pt-5 text-sm sm:flex-row sm:items-baseline sm:justify-between">
+            <div className="flex flex-col gap-1">
+              <span className="display text-lg">Pay Up</span>
+              {root && <span>Run by {root.operatorName}</span>}
+            </div>
+            <nav className="flex flex-wrap gap-x-5 gap-y-2">
+              <Link to="/terms" className="link">Terms</Link>
+              <Link to="/privacy" className="link">Privacy and cookies</Link>
+              {root?.contactEmail && <a href={`mailto:${root.contactEmail}`} className="link">Contact</a>}
+            </nav>
+          </div>
         </footer>
         <ScrollRestoration />
         <Scripts />
