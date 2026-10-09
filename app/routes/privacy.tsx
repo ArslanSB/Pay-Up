@@ -32,7 +32,7 @@ export default function Privacy({ loaderData }: Route.ComponentProps) {
         <p><b>Technical.</b> The server keeps ordinary request logs (IP address, browser, pages requested, time) for a short period, for security and troubleshooting. There are no analytics, no advertising trackers and no profiling.</p>
       </Section>
       <Section title="3. Why, and on what basis">
-        <p>To provide the service you asked for when you signed in, which is the contract between us, and to keep it secure, which is our legitimate interest. We do not use your data for marketing, do not sell it, and do not share it with anyone except the hosting provider that runs the server and, during sign-in only, Google or GitHub.</p>
+        <p>To provide the service you asked for when you signed in, which is the contract between us, and to keep it secure, which is our legitimate interest. We do not use your data for marketing, do not sell it, and do not share it with anyone except the hosting provider that runs the server and, during sign-in only, Google or GitHub. Pay Up's use of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy" className="link">Google API Services User Data Policy</a>, including the Limited Use requirements.</p>
       </Section>
       <Section title="4. Cookies">
         <p>The site sets three cookies, none of them for tracking, which is why there is no cookie banner: nothing here needs your consent.</p>
