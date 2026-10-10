@@ -4,14 +4,14 @@ import { getDb } from "../lib/db.server";
 import { isDeviceKind, parseDeviceName } from "../lib/devices.server";
 import { env } from "../lib/env.server";
 import { formatUserCode, POLL_INTERVAL_S, startLink } from "../lib/links.server";
-import { linkStartLimiter } from "../lib/rate-limit.server";
+import { linkStartLimiter, rateLimitKey } from "../lib/rate-limit.server";
 
 export const loader = api(async () => methodNotAllowed(["POST"]));
 
 /** POST /api/v1/links { kind, name }: a phone or watch starts signing in (spec 5.2). No token needed. */
 export const action = api(async ({ request }: Route.ActionArgs) => {
   if (request.method !== "POST") return methodNotAllowed(["POST"]);
-  if (!linkStartLimiter.hit(clientIp(request))) return apiError(429, "rate_limited", "Too many sign-in attempts. Wait a few minutes.");
+  if (!linkStartLimiter.hit(rateLimitKey(clientIp(request)))) return apiError(429, "rate_limited", "Too many sign-in attempts. Wait a few minutes.");
   const body = await readJsonBody(request);
   const kind = body.kind;
   const name = parseDeviceName(body.name);
