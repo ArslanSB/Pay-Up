@@ -48,6 +48,31 @@ export const MIGRATIONS: string[] = [
   );
   CREATE INDEX fines_jar ON fines(jar_id, created_at);
   `,
+  `
+  CREATE TABLE devices (
+    id           TEXT PRIMARY KEY,
+    user_id      TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    kind         TEXT NOT NULL CHECK (kind IN ('phone', 'watch')),
+    name         TEXT NOT NULL,
+    token_hash   TEXT NOT NULL UNIQUE,
+    created_at   TEXT NOT NULL,
+    last_used_at TEXT NOT NULL
+  );
+  CREATE INDEX devices_user ON devices(user_id);
+  CREATE TABLE device_links (
+    id               TEXT PRIMARY KEY,
+    device_code_hash TEXT NOT NULL UNIQUE,
+    user_code        TEXT NOT NULL UNIQUE,
+    kind             TEXT NOT NULL CHECK (kind IN ('phone', 'watch')),
+    name             TEXT NOT NULL,
+    approved_by      TEXT REFERENCES users(id) ON DELETE CASCADE,
+    created_at       TEXT NOT NULL,
+    expires_at       TEXT NOT NULL,
+    last_polled_at   TEXT
+  );
+  ALTER TABLE fines ADD COLUMN client_id TEXT;
+  CREATE UNIQUE INDEX fines_client ON fines(jar_id, client_id) WHERE client_id IS NOT NULL;
+  `,
 ];
 
 export function migrate(db: Db): void {
