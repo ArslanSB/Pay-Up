@@ -30,6 +30,10 @@ docker compose up --build -d
 
 The SQLite file lives in `./data` on the host. Back it up by copying that folder. Cookies are marked `secure` in production, so put the container behind HTTPS.
 
+## Phone and watch apps
+
+The Android phone and Wear OS apps talk to the JSON API at `/api/v1` with a token per device. A device signs in by showing a code that you approve at `/link` (or in the phone app). See `docs/superpowers/specs/2026-10-10-native-apps-design.md`. Signed-in users see and revoke devices at `/devices`.
+
 ## Configuration
 
 | Variable | Required | Default |
@@ -41,6 +45,7 @@ The SQLite file lives in `./data` on the host. Back it up by copying that folder
 | `DATABASE_PATH` | no | `./data/payup.db` (`/app/data/payup.db` in Docker) |
 | `APP_LOCALE` | no | `es-ES`, used when the browser sends no usable Accept-Language |
 | `OPERATOR_NAME` / `CONTACT_EMAIL` | for a public deployment | shown on the Terms and Privacy pages; the pages say they are not configured until you set them |
+| `ANDROID_CERT_FINGERPRINTS` | for the Android apps' App Links | empty. Comma-separated SHA-256 fingerprints of the app's signing certificates (the debug certificate in development, the Play App Signing one in production), served at `/.well-known/assetlinks.json` |
 | `TRUST_PROXY` | behind a reverse proxy | `loopback, linklocal, uniquelocal`: trusts X-Forwarded-* from private-network proxies such as a Docker network or a proxy on the same host. Set to `true` to trust any, or an Express trust-proxy value. The server also treats every request as addressed to `APP_URL`, so form posts work behind any proxy as long as `APP_URL` is the public origin. |
 | `PORT` | no | `3000` |
 

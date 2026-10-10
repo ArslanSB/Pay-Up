@@ -31,4 +31,5 @@ export default [
   route("terms", "routes/terms.tsx"),
   route("privacy", "routes/privacy.tsx"),
   route("delete-account", "routes/delete-account.tsx"),
+  route(".well-known/assetlinks.json", "routes/assetlinks.ts"),
 ] satisfies RouteConfig;

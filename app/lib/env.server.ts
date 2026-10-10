@@ -14,10 +14,22 @@ export interface Env {
   /** Who runs this deployment, shown on the legal pages. */
   operatorName: string;
   contactEmail: string | null;
+  /** SHA-256 fingerprints of the Android app's signing certificates, for App Links. */
+  androidCertFingerprints: string[];
 }
 
 function pair(id: string | undefined, secret: string | undefined): Credentials | null {
   return id && secret ? { clientId: id, clientSecret: secret } : null;
+}
+
+const FINGERPRINT = /^([0-9A-F]{2}:){31}[0-9A-F]{2}$/;
+
+function fingerprints(raw: string | undefined): string[] {
+  const list = (raw ?? "").split(",").map((s) => s.trim().toUpperCase()).filter(Boolean);
+  for (const fp of list) {
+    if (!FINGERPRINT.test(fp)) throw new Error("ANDROID_CERT_FINGERPRINTS must be SHA-256 fingerprints like AB:CD:…, separated by commas");
+  }
+  return list;
 }
 
 export function readEnv(source: NodeJS.ProcessEnv = process.env): Env {
@@ -37,6 +49,7 @@ export function readEnv(source: NodeJS.ProcessEnv = process.env): Env {
     isProduction: source.NODE_ENV === "production",
     operatorName: source.OPERATOR_NAME || "[operator name not set]",
     contactEmail: source.CONTACT_EMAIL || null,
+    androidCertFingerprints: fingerprints(source.ANDROID_CERT_FINGERPRINTS),
   };
 }
 

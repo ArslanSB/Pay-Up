@@ -42,3 +42,16 @@ describe("readEnv: operator identity for the legal pages", () => {
     expect(e.contactEmail).toBe("hello@example.com");
   });
 });
+
+describe("readEnv: Android App Links", () => {
+  const fp = Array.from({ length: 32 }, () => "ab").join(":");
+  it("defaults to no fingerprints", () => {
+    expect(readEnv(base).androidCertFingerprints).toEqual([]);
+  });
+  it("reads comma-separated fingerprints, uppercased", () => {
+    expect(readEnv({ ...base, ANDROID_CERT_FINGERPRINTS: ` ${fp} , ${fp.toUpperCase()} ` }).androidCertFingerprints).toEqual([fp.toUpperCase(), fp.toUpperCase()]);
+  });
+  it("refuses anything that is not a SHA-256 fingerprint", () => {
+    expect(() => readEnv({ ...base, ANDROID_CERT_FINGERPRINTS: "AB:CD" })).toThrow(/ANDROID_CERT_FINGERPRINTS/);
+  });
+});

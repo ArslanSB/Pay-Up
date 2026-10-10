@@ -1,0 +1,15 @@
+export const ANDROID_PACKAGE = "com.arslansb.payup";
+
+/** Digital Asset Links: lets the Android app open payup links such as a watch's /link (spec 5.5). 404 until configured. */
+export function assetLinks(fingerprints: string[]): Response {
+  if (fingerprints.length === 0) return new Response("Not found", { status: 404 });
+  return Response.json(
+    [
+      {
+        relation: ["delegate_permission/common.handle_all_urls"],
+        target: { namespace: "android_app", package_name: ANDROID_PACKAGE, sha256_cert_fingerprints: fingerprints },
+      },
+    ],
+    { headers: { "Cache-Control": "public, max-age=3600" } },
+  );
+}
