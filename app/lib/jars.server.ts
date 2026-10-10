@@ -1,4 +1,4 @@
-import { nowIso, type Db } from "./db.server";
+import { isUniqueViolation, nowIso, type Db } from "./db.server";
 import { newId, newSlugSuffix } from "./ids.server";
 import { slugify, withSuffix } from "./slugs";
 
@@ -73,14 +73,6 @@ function rowToJar(row: JarRow): Jar {
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
-}
-
-function isUniqueViolation(error: unknown, column: string): boolean {
-  return (
-    error instanceof Error &&
-    (error as { code?: string }).code === "SQLITE_CONSTRAINT_UNIQUE" &&
-    error.message.includes(column)
-  );
 }
 
 const SUFFIX_ATTEMPTS = 5;

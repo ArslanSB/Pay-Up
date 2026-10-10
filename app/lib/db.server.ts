@@ -94,6 +94,14 @@ export function openDatabase(path: string): Db {
   return db;
 }
 
+export function isUniqueViolation(error: unknown, column: string): boolean {
+  return (
+    error instanceof Error &&
+    (error as { code?: string }).code === "SQLITE_CONSTRAINT_UNIQUE" &&
+    error.message.includes(column)
+  );
+}
+
 export function nowIso(): string {
   return new Date().toISOString();
 }

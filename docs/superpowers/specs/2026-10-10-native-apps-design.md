@@ -159,7 +159,7 @@ Invariants:
    - `202` with `{ status: "pending" }` while waiting.
    - `200` with `{ token, device, user }` once approved. The server creates the `devices` row in the same transaction that deletes the link.
    - `410` with code `expired` when the link expired, was cancelled, or already issued its token.
-   - `429` with code `slow_down` when polled sooner than `interval` after the previous poll.
+   - `429` with code `slow_down` when polled more than a second sooner than `interval` after the previous poll (the second allows for network jitter).
 
 Sign-in returning to where it started: `/auth/:provider` accepts `returnTo`, a same-origin path that starts with `/` and not `//`. It is stored in the existing ten-minute OAuth cookie, and the callback redirects there instead of `/jars`. Anything else falls back to `/jars`.
 
