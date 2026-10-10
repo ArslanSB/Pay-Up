@@ -49,6 +49,8 @@ export interface OAuthTransient {
   provider: Provider;
   state: string;
   codeVerifier: string;
+  /** Same-origin path to land on after sign-in; checked again with safeReturnTo on the way out. */
+  returnTo?: string;
 }
 
 let transientCookie: ReturnType<typeof createCookie> | null = null;
@@ -60,7 +62,12 @@ function oauthCookie() {
 function isTransient(value: unknown): value is OAuthTransient {
   if (!value || typeof value !== "object") return false;
   const v = value as Record<string, unknown>;
-  return (v.provider === "google" || v.provider === "github") && typeof v.state === "string" && typeof v.codeVerifier === "string";
+  return (
+    (v.provider === "google" || v.provider === "github") &&
+    typeof v.state === "string" &&
+    typeof v.codeVerifier === "string" &&
+    (v.returnTo === undefined || typeof v.returnTo === "string")
+  );
 }
 
 export async function serializeOAuthTransient(transient: OAuthTransient): Promise<string> {

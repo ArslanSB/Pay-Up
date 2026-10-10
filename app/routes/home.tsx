@@ -1,6 +1,7 @@
 import { redirect } from "react-router";
 import type { Route } from "./+types/home";
 import { DemoJar } from "../components/DemoJar";
+import { SignInButtons } from "../components/SignInButtons";
 import { getDb } from "../lib/db.server";
 import { env } from "../lib/env.server";
 import { getUser } from "../lib/session.server";
@@ -38,7 +39,6 @@ const STEPS = [
 
 export default function Home({ loaderData }: Route.ComponentProps) {
   const { providers, signInError, deleted, appUrl } = loaderData;
-  const none = !providers.google && !providers.github;
   return (
     <main className="flex flex-col gap-12">
       <header className="grid gap-8 sm:grid-cols-[1.1fr_0.9fr] sm:grid-rows-[auto_auto] sm:gap-x-10 sm:gap-y-12">
@@ -59,15 +59,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         <div className="flex flex-col gap-4 sm:col-start-1 sm:row-start-2">
           {signInError && <p className="panel bg-pink px-3 py-2 font-semibold">Sign-in didn't complete. Try again.</p>}
           {deleted && <p className="panel bg-mint px-3 py-2 font-semibold">Your account is gone. Thanks for playing.</p>}
-          {providers.google && <a href="/auth/google" className="btn btn-ink raised">Continue with Google</a>}
-          {providers.github && <a href="/auth/github" className="btn btn-ghost raised">Continue with GitHub</a>}
-          {none && <p className="font-semibold">Sign-in isn't set up yet.</p>}
-          {!none && (
-            <p className="max-w-[46ch] text-sm leading-snug">
-              Signing in only tells Pay Up who you are: your name, email and picture, nothing else. By continuing you agree to the{" "}
-              <a href={`${appUrl}/terms`} className="link">Terms of Service</a> and <a href={`${appUrl}/privacy`} className="link">Privacy Policy</a>.
-            </p>
-          )}
+          <SignInButtons providers={providers} appUrl={appUrl} />
         </div>
         <section className="flex flex-col gap-4 sm:col-start-2 sm:row-start-2">
           <h2 className="text-xl font-extrabold">How it works</h2>

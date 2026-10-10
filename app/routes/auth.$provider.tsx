@@ -1,11 +1,11 @@
 import { redirect } from "react-router";
 import type { Route } from "./+types/auth.$provider";
 import { env } from "../lib/env.server";
-import { notFound } from "../lib/http.server";
+import { notFound, safeReturnTo } from "../lib/http.server";
 import { authorizationUrl, generateCodeVerifier, generateState, isProvider, redirectUri } from "../lib/oauth.server";
 import { serializeOAuthTransient } from "../lib/session.server";
 
-export async function loader({ params }: Route.LoaderArgs) {
+export async function loader({ request, params }: Route.LoaderArgs) {
   const provider = params.provider;
   if (!isProvider(provider)) return notFound();
   const e = env();
@@ -14,7 +14,8 @@ export async function loader({ params }: Route.LoaderArgs) {
   const state = generateState();
   const codeVerifier = generateCodeVerifier();
   const url = authorizationUrl(provider, creds, { redirectUri: redirectUri(e.appUrl, provider), state, codeVerifier });
+  const returnTo = safeReturnTo(new URL(request.url).searchParams.get("returnTo"));
   return redirect(url.toString(), {
-    headers: { "Set-Cookie": await serializeOAuthTransient({ provider, state, codeVerifier }) },
+    headers: { "Set-Cookie": await serializeOAuthTransient({ provider, state, codeVerifier, returnTo }) },
   });
 }

@@ -105,3 +105,35 @@ describe("auth callback: provider misbehaviour (final review, Important 1)", () 
     expect(cookies.some((c) => c.startsWith("__oauth=") && /Max-Age=0|Expires=/.test(c))).toBe(true);
   });
 });
+
+describe("auth: returning to where sign-in started", () => {
+  const signInFetch = async (input: RequestInfo | URL) => {
+    const url = String(input);
+    if (url.includes("access_token")) return json({ access_token: "tok" });
+    return json({ id: 77, login: "rt", name: "Return Tripper", avatar_url: null, email: "rt@x.y" });
+  };
+  const callback = async (returnTo: string) => {
+    vi.stubGlobal("fetch", signInFetch);
+    const transient = (await serializeOAuthTransient({ provider: "github", state: "st", codeVerifier: "ver", returnTo })).split(";")[0];
+    const response = (await callbackLoader(
+      callArgs(getRequest("http://localhost:3000/auth/github/callback?code=c&state=st", transient), { provider: "github" }),
+    )) as Response;
+    return response.headers.get("Location");
+  };
+
+  it("stores a same-origin returnTo when sign-in starts, and drops anything else", async () => {
+    const start = async (returnTo: string) => {
+      const response = (await startLoader(
+        callArgs(getRequest(`http://localhost:3000/auth/github?returnTo=${encodeURIComponent(returnTo)}`), { provider: "github" }),
+      )) as Response;
+      const cookie = response.headers.get("Set-Cookie")!.split(";")[0];
+      return (await parseOAuthTransient(getRequest("http://x/", cookie)))?.returnTo;
+    };
+    expect(await start("/link?code=WDJB-MJHT")).toBe("/link?code=WDJB-MJHT");
+    expect(await start("https://evil.example/")).toBe("/jars");
+  });
+  it("lands on the stored returnTo after sign-in, checking it again", async () => {
+    expect(await callback("/link?code=WDJB-MJHT")).toBe("/link?code=WDJB-MJHT");
+    expect(await callback("//evil.example")).toBe("/jars");
+  });
+});

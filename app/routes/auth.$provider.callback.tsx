@@ -2,7 +2,7 @@ import { redirect } from "react-router";
 import type { Route } from "./+types/auth.$provider.callback";
 import { getDb } from "../lib/db.server";
 import { env } from "../lib/env.server";
-import { notFound } from "../lib/http.server";
+import { notFound, safeReturnTo } from "../lib/http.server";
 import { exchangeCode, fetchProfile, isProvider, OAuthError, redirectUri, safeEqual } from "../lib/oauth.server";
 import { clearOAuthTransient, createUserSession, parseOAuthTransient } from "../lib/session.server";
 import { upsertUser } from "../lib/users.server";
@@ -30,7 +30,7 @@ export async function loader({ request, params }: Route.LoaderArgs) {
     const token = await exchangeCode(provider, creds, { redirectUri: redirectUri(e.appUrl, provider), code, codeVerifier: transient.codeVerifier });
     const profile = await fetchProfile(provider, token);
     const user = upsertUser(getDb(), { provider, ...profile });
-    const response = await createUserSession(user.id, "/jars");
+    const response = await createUserSession(user.id, safeReturnTo(transient.returnTo));
     response.headers.append("Set-Cookie", await clearOAuthTransient());
     return response;
   } catch (error) {
