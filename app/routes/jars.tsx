@@ -51,7 +51,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
       </div>
       <section className="mt-10 flex flex-col gap-3">
         <h2 className="text-xl font-extrabold">Account</h2>
-        <p className="text-sm">Signed in as {loaderData.name}. Deleting the account removes every jar, fine and settlement in it. There is no undo.</p>
+        <p className="text-sm">Signed in as {loaderData.name}. Deleting the account removes every jar, fine and settlement in it, and signs out every phone and watch. There is no undo.</p>
         <ConfirmButton action="/account" intent="delete" label="Delete my account" confirmLabel="Yes, delete everything" message="This erases your account and all of its jars. There is no undo." />
       </section>
     </main>

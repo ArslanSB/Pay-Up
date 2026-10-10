@@ -1,5 +1,9 @@
+import Database from "better-sqlite3";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { nowIso, openDatabase, type Db } from "./db.server";
+import { MIGRATIONS, nowIso, openDatabase, type Db } from "./db.server";
 
 describe("openDatabase", () => {
   it("creates the schema with foreign keys on", () => {
@@ -16,6 +20,34 @@ describe("openDatabase", () => {
     const db = openDatabase(":memory:");
     expect(() => db.exec("SELECT 1")).not.toThrow();
     expect(db.pragma("user_version", { simple: true })).toBe(2);
+  });
+  it("upgrades a version 1 database to version 2 and keeps its fines", () => {
+    const dir = mkdtempSync(join(tmpdir(), "payup-"));
+    const path = join(dir, "payup.db");
+    try {
+      const old = new Database(path);
+      old.exec(MIGRATIONS[0]);
+      old.pragma("user_version = 1");
+      const ts = nowIso();
+      old.prepare("INSERT INTO users (id, provider, provider_id, name, created_at) VALUES ('u1','github','1','T',?)").run(ts);
+      old
+        .prepare("INSERT INTO jars (id, owner_id, public_slug, title, fine_amount, currency, visibility, created_at, updated_at) VALUES ('j1','u1','slug1','T',100,'EUR','private',?,?)")
+        .run(ts, ts);
+      old.prepare("INSERT INTO fines (id, jar_id, amount, created_at) VALUES ('f1','j1',100,?)").run(ts);
+      old.close();
+
+      const upgraded = openDatabase(path);
+      expect(upgraded.pragma("user_version", { simple: true })).toBe(2);
+      expect(upgraded.prepare("SELECT client_id FROM fines WHERE id = 'f1'").get()).toEqual({ client_id: null });
+      expect(upgraded.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'devices'").get()).toEqual({ name: "devices" });
+      upgraded.close();
+
+      const reopened = openDatabase(path);
+      expect(reopened.pragma("user_version", { simple: true })).toBe(2);
+      reopened.close();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
   it("enforces the fine_amount and visibility checks", () => {
     const db = openDatabase(":memory:");
