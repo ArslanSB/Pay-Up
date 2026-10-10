@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { openDatabase, type Db } from "./db.server";
 import {
+  acceptClientTime,
+  addClientFine,
   addFine,
   createJar,
   deleteFine,
@@ -9,6 +11,7 @@ import {
   getHistory,
   getJarById,
   getJarForOwner,
+  getJarSummaryForOwner,
   getPublicJarBySlug,
   isSlugAvailable,
   listJarsForOwner,
@@ -186,5 +189,60 @@ describe("fines and settlements", () => {
     deleteJar(db, jar.id);
     expect(db.prepare("SELECT COUNT(*) AS n FROM fines").pluck().get()).toBe(0);
     expect(db.prepare("SELECT COUNT(*) AS n FROM settlements").pluck().get()).toBe(0);
+  });
+});
+
+describe("addClientFine", () => {
+  const NOW = new Date("2026-10-10T12:00:00.000Z");
+  it("adds a fine at the jar's current amount", () => {
+    const jar = createJar(db, ownerId, input);
+    const result = addClientFine(db, jar.id, { note: "on the wrist", clientId: "c-1", createdAt: null }, NOW);
+    expect(result?.created).toBe(true);
+    expect(result?.fine).toMatchObject({ jarId: jar.id, amount: 100, note: "on the wrist", settlementId: null, createdAt: NOW.toISOString() });
+  });
+  it("returns the original fine when a client id is replayed, even after the amount changed (Review Focus 2)", () => {
+    const jar = createJar(db, ownerId, input);
+    const first = addClientFine(db, jar.id, { note: null, clientId: "c-1", createdAt: null }, NOW)!;
+    updateJar(db, jar.id, { ...input, fineAmount: 250, publicSlug: jar.publicSlug });
+    const again = addClientFine(db, jar.id, { note: null, clientId: "c-1", createdAt: null }, NOW)!;
+    expect(again.created).toBe(false);
+    expect(again.fine).toEqual(first.fine);
+    expect(getBalance(db, jar.id)).toEqual({ total: 100, count: 1 });
+  });
+  it("treats the same client id in another jar, or no client id, as new fines", () => {
+    const a = createJar(db, ownerId, input);
+    const b = createJar(db, ownerId, input);
+    addClientFine(db, a.id, { note: null, clientId: "c-1", createdAt: null }, NOW);
+    expect(addClientFine(db, b.id, { note: null, clientId: "c-1", createdAt: null }, NOW)?.created).toBe(true);
+    addClientFine(db, a.id, { note: null, clientId: null, createdAt: null }, NOW);
+    addClientFine(db, a.id, { note: null, clientId: null, createdAt: null }, NOW);
+    expect(getBalance(db, a.id).count).toBe(3);
+  });
+  it("returns null for a missing jar", () => {
+    expect(addClientFine(db, "nope", { note: null, clientId: null, createdAt: null }, NOW)).toBeNull();
+  });
+});
+
+describe("acceptClientTime", () => {
+  const NOW = new Date("2026-10-10T12:00:00.000Z");
+  it("keeps a past time up to 7 days old, normalized to UTC", () => {
+    expect(acceptClientTime("2026-10-08T09:30:00+02:00", NOW)).toBe("2026-10-08T07:30:00.000Z");
+    expect(acceptClientTime("2026-10-03T12:00:00.000Z", NOW)).toBe("2026-10-03T12:00:00.000Z");
+  });
+  it("uses the server's time for future, too old or unreadable times", () => {
+    for (const raw of ["2026-10-10T12:00:01.000Z", "2026-10-03T11:59:59.000Z", "yesterday", "", null]) {
+      expect(acceptClientTime(raw, NOW)).toBe(NOW.toISOString());
+    }
+  });
+});
+
+describe("getJarSummaryForOwner", () => {
+  it("returns the jar with its unsettled balance, only for its owner", () => {
+    const jar = createJar(db, ownerId, input);
+    addFine(db, jar.id, null);
+    addFine(db, jar.id, null);
+    expect(getJarSummaryForOwner(db, jar.id, ownerId)).toMatchObject({ id: jar.id, unsettledTotal: 200, unsettledCount: 2 });
+    expect(getJarSummaryForOwner(db, jar.id, otherId)).toBeNull();
+    expect(getJarSummaryForOwner(db, "nope", ownerId)).toBeNull();
   });
 });

@@ -230,7 +230,7 @@ Fine details:
 - `clientId`: 1 to 64 characters of letters, digits and dashes. Clients send a random UUID per tap.
 - `createdAt`: used when it is not in the future and at most 7 days old; otherwise the server's time is used. Offline taps keep their real time this way.
 - The amount is always the jar's `fine_amount` when the server receives the fine.
-- `addFine` gains an options argument `{ clientId, createdAt }` and returns whether it created the row. Existing web callers are unchanged.
+- A new `addClientFine` beside `addFine` takes `{ note, clientId, createdAt }` and returns the fine and whether it created the row. `addFine` and its web callers are unchanged.
 
 Implementation: each endpoint group is a React Router resource route (`app/routes/api.v1.*.ts`): the loader handles GET, the action dispatches on `request.method`. The first task of the server plan confirms that React Router accepts POST, PUT and DELETE requests without an `Origin` header. If it does not, the same handlers are mounted in `server.js` as Express routes under `/api/v1`, before the React Router handler, and nothing else in this spec changes.
 

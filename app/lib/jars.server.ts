@@ -140,18 +140,26 @@ export function getPublicJarBySlug(db: Db, slug: string): Jar | null {
   return row ? rowToJar(row) : null;
 }
 
+const SUMMARY_COLUMNS = `j.*,
+  COALESCE((SELECT SUM(t.amount) FROM fines t WHERE t.jar_id = j.id AND t.settlement_id IS NULL), 0) AS unsettled_total,
+  (SELECT COUNT(*) FROM fines t WHERE t.jar_id = j.id AND t.settlement_id IS NULL) AS unsettled_count`;
+
+function rowToSummary(row: JarSummaryRow): JarSummary {
+  return { ...rowToJar(row), unsettledTotal: row.unsettled_total, unsettledCount: row.unsettled_count };
+}
+
 export function listJarsForOwner(db: Db, ownerId: string): JarSummary[] {
-  const rows = db
-    .prepare<[string], JarSummaryRow>(
-      `SELECT j.*,
-         COALESCE((SELECT SUM(t.amount) FROM fines t WHERE t.jar_id = j.id AND t.settlement_id IS NULL), 0) AS unsettled_total,
-         (SELECT COUNT(*) FROM fines t WHERE t.jar_id = j.id AND t.settlement_id IS NULL) AS unsettled_count
-       FROM jars j
-       WHERE j.owner_id = ?
-       ORDER BY j.created_at DESC, j.rowid DESC`,
-    )
-    .all(ownerId);
-  return rows.map((row) => ({ ...rowToJar(row), unsettledTotal: row.unsettled_total, unsettledCount: row.unsettled_count }));
+  return db
+    .prepare<[string], JarSummaryRow>(`SELECT ${SUMMARY_COLUMNS} FROM jars j WHERE j.owner_id = ? ORDER BY j.created_at DESC, j.rowid DESC`)
+    .all(ownerId)
+    .map(rowToSummary);
+}
+
+export function getJarSummaryForOwner(db: Db, id: string, ownerId: string): JarSummary | null {
+  const row = db
+    .prepare<[string, string], JarSummaryRow>(`SELECT ${SUMMARY_COLUMNS} FROM jars j WHERE j.id = ? AND j.owner_id = ?`)
+    .get(id, ownerId);
+  return row ? rowToSummary(row) : null;
 }
 
 export function updateJar(db: Db, id: string, input: JarInput, suffix: () => string = newSlugSuffix): Jar | null {
@@ -235,6 +243,51 @@ export function addFine(db: Db, jarId: string, note: string | null): Fine | null
     fine.createdAt,
   );
   return fine;
+}
+
+export const CLIENT_TIME_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
+
+/** Offline taps keep their real time when it is in the past and at most 7 days old; otherwise the server's time. */
+export function acceptClientTime(raw: string | null, now: Date): string {
+  const t = raw ? Date.parse(raw) : Number.NaN;
+  if (Number.isFinite(t) && t <= now.getTime() && now.getTime() - t <= CLIENT_TIME_WINDOW_MS) return new Date(t).toISOString();
+  return now.toISOString();
+}
+
+export interface ClientFineInput {
+  note: string | null;
+  /** Random id the device gives each tap, so a retried send is stored once. */
+  clientId: string | null;
+  createdAt: string | null;
+}
+
+/** A fine from a native app. Replaying a clientId already in this jar returns that fine and inserts nothing. */
+export function addClientFine(db: Db, jarId: string, input: ClientFineInput, now: Date = new Date()): { fine: Fine; created: boolean } | null {
+  return db.transaction((): { fine: Fine; created: boolean } | null => {
+    const jar = getJarById(db, jarId);
+    if (!jar) return null;
+    if (input.clientId) {
+      const existing = db.prepare<[string, string], FineRow>("SELECT * FROM fines WHERE jar_id = ? AND client_id = ?").get(jarId, input.clientId);
+      if (existing) return { fine: rowToFine(existing), created: false };
+    }
+    const fine: Fine = {
+      id: newId(),
+      jarId,
+      amount: jar.fineAmount,
+      note: input.note,
+      settlementId: null,
+      createdAt: acceptClientTime(input.createdAt, now),
+    };
+    db.prepare("INSERT INTO fines (id, jar_id, amount, note, settlement_id, created_at, client_id) VALUES (?, ?, ?, ?, NULL, ?, ?)").run(
+      fine.id,
+      fine.jarId,
+      fine.amount,
+      fine.note,
+      fine.createdAt,
+      input.clientId,
+    );
+    return { fine, created: true };
+  })();
 }
 
 export function deleteFine(db: Db, jarId: string, fineId: string): "deleted" | "settled" | "missing" {
