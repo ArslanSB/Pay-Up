@@ -27,6 +27,7 @@ export default [
   route("account", "routes/account.tsx"),
   route("link", "routes/link.tsx"),
   route("link/phone", "routes/link.phone.tsx"),
+  route("devices", "routes/devices.tsx"),
   route("terms", "routes/terms.tsx"),
   route("privacy", "routes/privacy.tsx"),
 ] satisfies RouteConfig;

@@ -35,7 +35,8 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
   const { subtitle, jars } = loaderData;
   return (
     <main className="flex flex-col gap-6">
-      <nav className="flex justify-end">
+      <nav className="flex items-center justify-end gap-5">
+        <Link to="/devices" className="link">Devices</Link>
         <Form method="post" action="/logout"><button type="submit" className="link">Sign out</button></Form>
       </nav>
       <div>

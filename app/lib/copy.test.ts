@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { dashboardSubtitle, fineCountLabel } from "./copy";
+import { dashboardSubtitle, fineCountLabel, lastUsedLabel } from "./copy";
 
 const nbsp = (s: string) => s.replace(/ /g, " ");
 const jar = (over: Partial<{ currency: string; unsettledTotal: number; unsettledCount: number }>) =>
@@ -25,5 +25,14 @@ describe("dashboardSubtitle", () => {
   });
   it("counts jars when currencies are mixed", () => {
     expect(dashboardSubtitle([jar({ currency: "EUR", unsettledTotal: 100 }), jar({ currency: "USD", unsettledTotal: 100 }), jar({})], "es-ES")).toBe("3 jars.");
+  });
+});
+
+describe("lastUsedLabel", () => {
+  const now = new Date("2026-10-10T12:00:00.000Z");
+  it("says today and yesterday in lowercase, otherwise the date", () => {
+    expect(lastUsedLabel("2026-10-10T08:00:00.000Z", now, "Europe/Madrid", "en-GB")).toBe("Last used today");
+    expect(lastUsedLabel("2026-10-09T08:00:00.000Z", now, "Europe/Madrid", "en-GB")).toBe("Last used yesterday");
+    expect(lastUsedLabel("2026-10-01T08:00:00.000Z", now, "Europe/Madrid", "en-GB")).toBe("Last used 1 October");
   });
 });

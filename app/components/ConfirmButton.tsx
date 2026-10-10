@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Form } from "react-router";
 
-export function ConfirmButton({ intent, label, confirmLabel, message, className = "btn btn-ghost", action }: {
+export function ConfirmButton({ intent, label, confirmLabel, message, className = "btn btn-ghost", action, fields = {} }: {
   intent: string;
   /** Route to post to; defaults to the current one. */
   action?: string;
@@ -9,6 +9,8 @@ export function ConfirmButton({ intent, label, confirmLabel, message, className 
   confirmLabel: string;
   message: string;
   className?: string;
+  /** Hidden fields posted with the intent, such as the id of the thing being removed. */
+  fields?: Record<string, string>;
 }) {
   const [open, setOpen] = useState(false);
   if (!open) {
@@ -19,6 +21,7 @@ export function ConfirmButton({ intent, label, confirmLabel, message, className 
       <p className="font-semibold">{message}</p>
       <div className="flex gap-3">
         <Form method="post" action={action}>
+          {Object.entries(fields).map(([name, value]) => <input key={name} type="hidden" name={name} value={value} />)}
           <button type="submit" name="intent" value={intent} className="btn btn-ink">{confirmLabel}</button>
         </Form>
         <button type="button" className="btn btn-ghost" onClick={() => setOpen(false)}>Keep it</button>

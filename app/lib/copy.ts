@@ -1,3 +1,4 @@
+import { dayLabel } from "./dates";
 import type { JarSummary } from "./jars.server";
 import { formatMoney } from "./money";
 
@@ -12,4 +13,10 @@ export function dashboardSubtitle(jars: JarSummary[], locale: string): string {
   const total = jars.reduce((sum, j) => sum + j.unsettledTotal, 0);
   if (total === 0) return "Nothing owed.";
   return `${formatMoney(total, jars[0].currency, locale)} owed. Ouch.`;
+}
+
+/** "Last used today", "Last used yesterday", "Last used 6 October". */
+export function lastUsedLabel(iso: string, now: Date, timeZone: string, locale: string): string {
+  const label = dayLabel(iso, now, timeZone, locale);
+  return `Last used ${label === "Today" || label === "Yesterday" ? label.toLowerCase() : label}`;
 }
