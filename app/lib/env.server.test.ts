@@ -51,7 +51,7 @@ describe("readEnv: Android App Links", () => {
   it("reads comma-separated fingerprints, uppercased", () => {
     expect(readEnv({ ...base, ANDROID_CERT_FINGERPRINTS: ` ${fp} , ${fp.toUpperCase()} ` }).androidCertFingerprints).toEqual([fp.toUpperCase(), fp.toUpperCase()]);
   });
-  it("refuses anything that is not a SHA-256 fingerprint", () => {
-    expect(() => readEnv({ ...base, ANDROID_CERT_FINGERPRINTS: "AB:CD" })).toThrow(/ANDROID_CERT_FINGERPRINTS/);
+  it("does not validate fingerprints, so a typo cannot break the whole site", () => {
+    expect(readEnv({ ...base, ANDROID_CERT_FINGERPRINTS: "ab:cd, ,x" }).androidCertFingerprints).toEqual(["AB:CD", "X"]);
   });
 });

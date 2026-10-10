@@ -22,14 +22,9 @@ function pair(id: string | undefined, secret: string | undefined): Credentials |
   return id && secret ? { clientId: id, clientSecret: secret } : null;
 }
 
-const FINGERPRINT = /^([0-9A-F]{2}:){31}[0-9A-F]{2}$/;
-
+// Validated where it is used (assetlinks.server.ts), so a typo cannot break readEnv for the whole site.
 function fingerprints(raw: string | undefined): string[] {
-  const list = (raw ?? "").split(",").map((s) => s.trim().toUpperCase()).filter(Boolean);
-  for (const fp of list) {
-    if (!FINGERPRINT.test(fp)) throw new Error("ANDROID_CERT_FINGERPRINTS must be SHA-256 fingerprints like AB:CD:…, separated by commas");
-  }
-  return list;
+  return (raw ?? "").split(",").map((s) => s.trim().toUpperCase()).filter(Boolean);
 }
 
 export function readEnv(source: NodeJS.ProcessEnv = process.env): Env {
