@@ -44,10 +44,12 @@ export const action = api(async ({ request, params }: Route.ActionArgs) => {
   const parsed = parseJarJson(await readJsonBody(request));
   if (!parsed.ok) return validationError(parsed.fields);
   try {
-    updateJar(db, jar.id, parsed.input);
+    if (!updateJar(db, jar.id, parsed.input)) return jarNotFound();
   } catch (error) {
     if (error instanceof SlugTakenError) return slugTakenError();
     throw error;
   }
-  return apiJson({ jar: jarJson(getJarSummaryForOwner(db, jar.id, user.id)!, env().appUrl) });
+  const updated = getJarSummaryForOwner(db, jar.id, user.id);
+  if (!updated) return jarNotFound();
+  return apiJson({ jar: jarJson(updated, env().appUrl) });
 });

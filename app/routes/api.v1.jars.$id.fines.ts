@@ -1,5 +1,5 @@
 import type { Route } from "./+types/api.v1.jars.$id.fines";
-import { api, apiJson, methodNotAllowed, optionalStringField, readJsonBody, requireDevice, requireJar, validationError } from "../lib/api.server";
+import { api, apiJson, jarNotFound, methodNotAllowed, optionalStringField, readJsonBody, requireDevice, requireJar, validationError } from "../lib/api.server";
 import { fineJson } from "../lib/api-json.server";
 import { getDb } from "../lib/db.server";
 import { addClientFine, getBalance } from "../lib/jars.server";
@@ -28,6 +28,6 @@ export const action = api(async ({ request, params }: Route.ActionArgs) => {
     });
   }
   const result = addClientFine(db, jar.id, { note: note.note, clientId, createdAt });
-  if (!result) throw new Error(`jar ${jar.id} vanished while adding a fine`);
+  if (!result) return jarNotFound();
   return apiJson({ fine: fineJson(result.fine), balance: getBalance(db, jar.id) }, result.created ? 201 : 200);
 });
