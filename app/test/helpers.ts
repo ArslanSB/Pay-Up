@@ -1,4 +1,5 @@
 import { getDb, type Db } from "../lib/db.server";
+import { createDevice, type DeviceKind } from "../lib/devices.server";
 import { createUserSession } from "../lib/session.server";
 import { upsertUser, type User } from "../lib/users.server";
 
@@ -40,4 +41,21 @@ export async function catchResponse(promise: Promise<unknown>): Promise<Response
     throw error;
   }
   throw new Error("expected a thrown Response");
+}
+
+/** A JSON API request. A body makes it a POST unless `method` says otherwise. */
+export function apiRequest(url: string, options: { method?: string; token?: string; body?: unknown; ip?: string } = {}): Request {
+  const headers: Record<string, string> = {};
+  if (options.token) headers.Authorization = `Bearer ${options.token}`;
+  if (options.ip) headers["x-payup-client-ip"] = options.ip;
+  let body: string | undefined;
+  if (options.body !== undefined) {
+    headers["Content-Type"] = "application/json";
+    body = typeof options.body === "string" ? options.body : JSON.stringify(options.body);
+  }
+  return new Request(url, { method: options.method ?? (body === undefined ? "GET" : "POST"), headers, body });
+}
+
+export function deviceTokenFor(userId: string, kind: DeviceKind = "phone", db: Db = getDb()): string {
+  return createDevice(db, userId, kind, kind === "phone" ? "Test phone" : "Test watch").token;
 }

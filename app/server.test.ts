@@ -12,7 +12,8 @@ afterEach(async () => {
 async function boot(options: { trustProxy: string | boolean; publicOrigin?: string | null }) {
   const app = createApp({
     ...options,
-    handler: (req, res) => res.json({ protocol: req.protocol, host: req.hostname, hostHeader: req.get("host"), ip: req.ip }),
+    handler: (req, res) =>
+      res.json({ protocol: req.protocol, host: req.hostname, hostHeader: req.get("host"), ip: req.ip, clientIp: req.get("x-payup-client-ip") }),
   });
   const server = app.listen(0, "127.0.0.1");
   servers.push(server);
@@ -24,6 +25,11 @@ async function boot(options: { trustProxy: string | boolean; publicOrigin?: stri
 const forwarded = { "X-Forwarded-Proto": "https", "X-Forwarded-Host": "payup.example.com", "X-Forwarded-For": "203.0.113.9" };
 
 describe("createApp behind a reverse proxy", () => {
+  it("passes Express's view of the client address to the app, overwriting a client-sent value", async () => {
+    const base = await boot({ trustProxy: "loopback, linklocal, uniquelocal", publicOrigin: null });
+    const seen = await (await fetch(`${base}/probe`, { headers: { ...forwarded, "X-Payup-Client-Ip": "1.2.3.4" } })).json();
+    expect(seen.clientIp).toBe("203.0.113.9");
+  });
   it("sees the forwarded origin when the proxy is trusted (the default trusts private networks)", async () => {
     const base = await boot({ trustProxy: "loopback, linklocal, uniquelocal", publicOrigin: null });
     const seen = await (await fetch(`${base}/probe`, { headers: forwarded })).json();

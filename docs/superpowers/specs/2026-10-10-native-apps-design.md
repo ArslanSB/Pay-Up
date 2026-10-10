@@ -188,7 +188,7 @@ Sign-in returning to where it started: `/auth/:provider` accepts `returnTo`, a s
 
 - Validation reuses the web's rules and messages. `validation.ts` gains `parseJarJson(body)`, which shares the zod field rules with `parseJarForm`. The one difference is the amount: JSON sends `fineAmount` as integer minor units, checked as an integer greater than 0 with the web's message "Amount must be more than 0." Field names in `fields` are the JSON names (`title`, `description`, `fineAmount`, `currency`, `visibility`, `publicSlug`).
 - Notes: optional, trimmed, at most 140 characters, empty means none, as `parseNote`.
-- `POST /links` is limited to 10 per IP per 10 minutes. The IP is Express's `req.ip` (which honours `TRUST_PROXY`), passed to React Router through the load context in `server.js`. Under `react-router dev`, which does not use `server.js`, every request shares one bucket.
+- `POST /links` is limited to 10 per IP per 10 minutes. The IP is Express's `req.ip` (which honours `TRUST_PROXY`), passed to React Router in an `x-payup-client-ip` header that `server.js` sets on every request, overwriting any value the client sent. Under `react-router dev`, which does not use `server.js`, every request shares one bucket.
 - Compatibility: `/api/v1` only ever gains endpoints and fields. Nothing is removed or renamed. A breaking change would be a new `/api/v2` alongside v1. Clients ignore unknown fields.
 
 ### 5.4 Endpoints

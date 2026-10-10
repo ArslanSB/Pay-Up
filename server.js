@@ -44,6 +44,13 @@ export function createApp({
       next();
     });
   }
+  // The API rate-limits by client address. React Router only sees a Request, so hand it Express's view of the
+  // address (which honours trust proxy) in a header, overwriting anything the client sent.
+  app.use((req, _res, next) => {
+    req.headers["x-payup-client-ip"] = req.ip ?? "";
+    next();
+  });
+
   app.get("/healthz", (_req, res) => {
     res.type("text").send("ok");
   });
