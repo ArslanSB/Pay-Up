@@ -39,6 +39,7 @@ export function isDeviceKind(value: unknown): value is DeviceKind {
 export function parseDeviceName(raw: unknown): string | null {
   if (typeof raw !== "string") return null;
   const name = raw.trim();
+  if (/[\p{Cc}\p{Cf}]/u.test(name)) return null;
   return name.length >= 1 && name.length <= DEVICE_NAME_MAX ? name : null;
 }
 

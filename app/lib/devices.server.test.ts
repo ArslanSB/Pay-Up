@@ -81,4 +81,10 @@ describe("input checks", () => {
     expect(parseDeviceName("   ")).toBeNull();
     expect(parseDeviceName(42)).toBeNull();
   });
+  it("rejects control and format characters such as newlines, bidi overrides and zero-width spaces", () => {
+    expect(parseDeviceName("Pixel\nWatch")).toBeNull();
+    expect(parseDeviceName("Pixel\u202EWatch")).toBeNull();
+    expect(parseDeviceName("Pixel\u200BWatch")).toBeNull();
+    expect(parseDeviceName("Pixel Watch 3")).toBe("Pixel Watch 3");
+  });
 });
