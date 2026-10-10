@@ -24,6 +24,7 @@ export default [
   route("api/v1/jars/:id/fines", "routes/api.v1.jars.$id.fines.ts"),
   route("api/v1/jars/:id/fines/:fineId", "routes/api.v1.jars.$id.fines.$fineId.ts"),
   route("api/v1/jars/:id/settlements", "routes/api.v1.jars.$id.settlements.ts"),
+  route("api/v1/*", "routes/api.v1.$.ts"),
   route("account", "routes/account.tsx"),
   route("link", "routes/link.tsx"),
   route("link/phone", "routes/link.phone.tsx"),
