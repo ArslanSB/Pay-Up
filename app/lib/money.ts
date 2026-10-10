@@ -1,7 +1,7 @@
 export const CURRENCIES = ["EUR", "USD", "GBP", "CHF", "SEK", "NOK", "DKK", "PLN"] as const;
 export type Currency = (typeof CURRENCIES)[number];
 
-const MAX_MINOR = 100_000_000; // 1,000,000.00
+export const MAX_MINOR = 100_000_000; // 1,000,000.00
 
 export function isCurrency(value: string): value is Currency {
   return (CURRENCIES as readonly string[]).includes(value);

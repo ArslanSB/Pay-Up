@@ -1,9 +1,13 @@
 import * as z from "zod";
 import type { Jar, JarInput } from "./jars.server";
-import { amountToInput, CURRENCIES, parseAmount } from "./money";
+import { amountToInput, CURRENCIES, MAX_MINOR, parseAmount } from "./money";
 import { isValidSlug, SLUG_MESSAGE, SLUG_TAKEN_MESSAGE } from "./slugs";
 
 export { SLUG_MESSAGE, SLUG_TAKEN_MESSAGE };
+
+export const AMOUNT_MESSAGE = "Amount must be more than 0.";
+const TITLE_MESSAGE = "Title is required.";
+const DESCRIPTION_MESSAGE = "Description must be 280 characters or fewer.";
 
 export type JarField = "title" | "description" | "amount" | "currency" | "visibility" | "slug";
 export type JarFormErrors = Partial<Record<JarField, string>>;
@@ -16,17 +20,24 @@ export interface JarFormValues {
   slug: string;
 }
 
+// Field rules shared by the web form and the JSON API, so both report the same messages.
+const titleField = z.string(TITLE_MESSAGE).trim().min(1, TITLE_MESSAGE).max(60, "Title must be 60 characters or fewer.");
+const descriptionField = z.string(DESCRIPTION_MESSAGE).trim().max(280, DESCRIPTION_MESSAGE);
+const currencyField = z.enum(CURRENCIES, "Pick a currency.");
+const visibilityField = z.enum(["private", "public"], "Pick private or public.");
+const slugField = z
+  .string(SLUG_MESSAGE)
+  .trim()
+  .toLowerCase()
+  .refine((v) => v === "" || isValidSlug(v), SLUG_MESSAGE);
+
 const jarSchema = z.object({
-  title: z.string().trim().min(1, "Title is required.").max(60, "Title must be 60 characters or fewer."),
-  description: z.string().trim().max(280, "Description must be 280 characters or fewer."),
-  amount: z.string().refine((v) => parseAmount(v) !== null, "Amount must be more than 0."),
-  currency: z.enum(CURRENCIES, "Pick a currency."),
-  visibility: z.enum(["private", "public"], "Pick private or public."),
-  slug: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .refine((v) => v === "" || isValidSlug(v), SLUG_MESSAGE),
+  title: titleField,
+  description: descriptionField,
+  amount: z.string().refine((v) => parseAmount(v) !== null, AMOUNT_MESSAGE),
+  currency: currencyField,
+  visibility: visibilityField,
+  slug: slugField,
 });
 
 const FIELDS: JarField[] = ["title", "description", "amount", "currency", "visibility", "slug"];
@@ -72,6 +83,46 @@ export function parseJarForm(form: FormData): { ok: true; input: JarInput } | { 
   };
 }
 
+export type JarJsonField = "title" | "description" | "fineAmount" | "currency" | "visibility" | "publicSlug";
+export type JarJsonErrors = Partial<Record<JarJsonField, string>>;
+
+const jarJsonSchema = z.object({
+  title: titleField,
+  description: descriptionField,
+  fineAmount: z.number(AMOUNT_MESSAGE).int(AMOUNT_MESSAGE).min(1, AMOUNT_MESSAGE).max(MAX_MINOR, AMOUNT_MESSAGE),
+  currency: currencyField,
+  visibility: visibilityField,
+  publicSlug: slugField,
+});
+
+const JSON_FIELDS: JarJsonField[] = ["title", "description", "fineAmount", "currency", "visibility", "publicSlug"];
+
+/** The API's jar body: the form's rules and messages, with the amount as integer minor units. */
+export function parseJarJson(body: Record<string, unknown>): { ok: true; input: JarInput } | { ok: false; fields: JarJsonErrors } {
+  const result = jarJsonSchema.safeParse({ ...body, description: body.description ?? "", publicSlug: body.publicSlug ?? "" });
+  if (!result.success) {
+    const fieldErrors = z.flattenError(result.error).fieldErrors;
+    const fields: JarJsonErrors = {};
+    for (const field of JSON_FIELDS) {
+      const first = fieldErrors[field]?.[0];
+      if (first) fields[field] = first;
+    }
+    return { ok: false, fields };
+  }
+  const d = result.data;
+  return {
+    ok: true,
+    input: {
+      title: d.title,
+      description: d.description,
+      fineAmount: d.fineAmount,
+      currency: d.currency,
+      visibility: d.visibility,
+      publicSlug: d.publicSlug === "" ? null : d.publicSlug,
+    },
+  };
+}
+
 export function jarToFormValues(jar: Jar): JarFormValues {
   return {
     title: jar.title,
@@ -83,7 +134,7 @@ export function jarToFormValues(jar: Jar): JarFormValues {
   };
 }
 
-export function parseNote(raw: FormDataEntryValue | null): { ok: true; note: string | null } | { ok: false; error: string } {
+export function parseNote(raw: unknown): { ok: true; note: string | null } | { ok: false; error: string } {
   const text = typeof raw === "string" ? raw.trim() : "";
   if (text.length > 140) return { ok: false, error: "Note must be 140 characters or fewer." };
   return { ok: true, note: text.length === 0 ? null : text };
