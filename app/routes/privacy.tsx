@@ -3,7 +3,7 @@ import type { Route } from "./+types/privacy";
 import { LegalPage, Section } from "../components/LegalPage";
 import { env } from "../lib/env.server";
 
-const UPDATED = "2026-10-09";
+const UPDATED = "2026-10-10";
 
 export function meta() {
   return [{ title: "Privacy Policy" }];
@@ -51,16 +51,20 @@ export default function Privacy({ loaderData }: Route.ComponentProps) {
       <Section title="5. Public jars">
         <p>If you make a jar public, anyone with its link can see the title, description, balance, fine times and notes. Search engines can index it if someone links to it. Private jars are visible only to you while signed in. Think before putting other people's names in notes on a public jar.</p>
       </Section>
-      <Section title="6. How long we keep it">
-        <p>Until you delete the jar or your account. Deleting your account from the dashboard erases the account, its jars, fines and settlements immediately. Server backups, where the hosting provider keeps them, can hold a copy for up to 30 days afterwards.</p>
+      <Section title="6. Phone and watch apps">
+        <p>The Pay Up apps for Android phones and Wear OS watches use the same account and the same data as this site. When you sign a phone or watch in, it gets its own key. We store a fingerprint of that key, never the key itself, with the device's name (for example "Pixel Watch 3"), whether it is a phone or a watch, when it was added and when it was last used.</p>
+        <p>The device keeps its key, a copy of your jars and any fines you tapped while offline until they reach the server. You can see and revoke your devices on the <Link to="/devices" className="link">Devices</Link> page or in the phone app, and signing out on a device revokes it too. The apps contain no analytics, advertising or tracking SDKs.</p>
       </Section>
-      <Section title="7. Your rights">
-        <p>You can ask to see, correct, export or erase your data, to restrict or object to how it is used, and you can delete your account yourself from the dashboard. Email the contact address for the rest. You can also complain to the Spanish data protection authority (AEPD) or to the authority in your own country.</p>
+      <Section title="7. How long we keep it">
+        <p>Until you delete the jar or your account. Deleting your account from the dashboard erases the account, its jars, fines, settlements and devices immediately. Server backups, where the hosting provider keeps them, can hold a copy for up to 30 days afterwards.</p>
       </Section>
-      <Section title="8. Where it lives, and security">
+      <Section title="8. Your rights">
+        <p>You can ask to see, correct, export or erase your data, to restrict or object to how it is used, and you can delete your account yourself from the dashboard, from the phone app, or by following <Link to="/delete-account" className="link">these steps</Link>. Email the contact address for the rest. You can also complain to the Spanish data protection authority (AEPD) or to the authority in your own country.</p>
+      </Section>
+      <Section title="9. Where it lives, and security">
         <p>Your data is stored on the server the operator runs this site from; ask if you need to know where it is hosted. The site uses HTTPS and signed cookies, and only the operator can reach the database. No system is perfectly secure.</p>
       </Section>
-      <Section title="9. Children and changes">
+      <Section title="10. Children and changes">
         <p>The service is for people aged 16 and over. We may update this page; the date at the top tells you when. The <Link to="/terms" className="link">Terms of Service</Link> cover the rest.</p>
       </Section>
     </LegalPage>
