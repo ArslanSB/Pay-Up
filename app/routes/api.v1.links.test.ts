@@ -46,6 +46,11 @@ describe("POST /api/v1/links", () => {
     expect((await limited.json()).error.code).toBe("rate_limited");
     expect((await start()).response.status).toBe(201);
   });
+  it("rejects a token poll body over 16 KB", async () => {
+    const response = await poll("x".repeat(17 * 1024));
+    expect(response.status).toBe(400);
+    expect((await response.json()).error.code).toBe("invalid_request");
+  });
   it("answers GET with 405", async () => {
     expect((await startLoader(callArgs(apiRequest(`${BASE}/links`)))).status).toBe(405);
   });

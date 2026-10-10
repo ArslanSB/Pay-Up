@@ -118,6 +118,35 @@ describe("readJsonBody", () => {
   });
 });
 
+describe("readJsonBody limits", () => {
+  it("refuses a Content-Length over 16 KB without reading the body", async () => {
+    const request = new Request("http://localhost:3000/api/v1/x", { method: "POST", body: "{}", headers: { "Content-Length": "20000" } });
+    const response = await thrownBy(() => readJsonBody(request));
+    expect(response.status).toBe(400);
+    expect((await response.json()).error.code).toBe("invalid_request");
+  });
+  it("stops reading a chunked body once it passes 16 KB", async () => {
+    let pulled = 0;
+    let cancelled = false;
+    const chunk = new Uint8Array(8 * 1024).fill(32);
+    const body = new ReadableStream<Uint8Array>({
+      pull(controller) {
+        pulled += 1;
+        controller.enqueue(chunk);
+      },
+      cancel() {
+        cancelled = true;
+      },
+    });
+    const request = new Request("http://localhost:3000/api/v1/x", { method: "POST", body, duplex: "half" } as RequestInit);
+    const response = await thrownBy(() => readJsonBody(request));
+    expect(response.status).toBe(400);
+    expect((await response.json()).error.code).toBe("invalid_request");
+    expect(cancelled).toBe(true);
+    expect(pulled).toBeLessThan(10);
+  });
+});
+
 describe("small helpers", () => {
   it("reads the client address header, or a shared bucket", () => {
     expect(clientIp(new Request("http://x/", { headers: { "x-payup-client-ip": "203.0.113.9" } }))).toBe("203.0.113.9");

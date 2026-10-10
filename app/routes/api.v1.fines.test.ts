@@ -42,6 +42,12 @@ describe("POST /api/v1/jars/:id/fines", () => {
     expect(json.fine.id).toBe(first.fine.id);
     expect(json.balance).toEqual({ total: 100, count: 1 });
   });
+  it("replaces a createdAt older than a week with server time", async () => {
+    const { token, jar } = setup();
+    const old = new Date(Date.now() - 8 * 24 * 3600_000).toISOString();
+    const { fine } = await (await tap(token, jar.id, { createdAt: old })).json();
+    expect(Math.abs(Date.now() - Date.parse(fine.createdAt))).toBeLessThan(5000);
+  });
   it("keeps a recent offline tap's time", async () => {
     const { token, jar } = setup();
     const createdAt = new Date(Date.now() - 2 * 24 * 3600_000).toISOString();

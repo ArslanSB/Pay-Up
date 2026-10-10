@@ -83,9 +83,31 @@ export function requireJar(db: Db, ownerId: string, jarId: string): Jar {
 
 export const MAX_BODY_BYTES = 16 * 1024;
 
+const BODY_TOO_LARGE = "Request body is too large.";
+
+/** The request body as text, read in chunks so a body over the cap is refused without being buffered whole. */
+async function readCappedText(request: Request): Promise<string> {
+  const declared = Number(request.headers.get("Content-Length"));
+  if (Number.isFinite(declared) && declared > MAX_BODY_BYTES) throw apiError(400, "invalid_request", BODY_TOO_LARGE);
+  if (!request.body) return "";
+  const reader = request.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    total += value.byteLength;
+    if (total > MAX_BODY_BYTES) {
+      await reader.cancel();
+      throw apiError(400, "invalid_request", BODY_TOO_LARGE);
+    }
+    chunks.push(value);
+  }
+  return new TextDecoder().decode(Buffer.concat(chunks));
+}
+
 export async function readJsonBody(request: Request): Promise<Record<string, unknown>> {
-  const text = await request.text();
-  if (Buffer.byteLength(text, "utf8") > MAX_BODY_BYTES) throw apiError(400, "invalid_request", "Request body is too large.");
+  const text = await readCappedText(request);
   if (text.trim() === "") return {};
   let parsed: unknown;
   try {
