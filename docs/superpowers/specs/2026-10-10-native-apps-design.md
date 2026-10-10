@@ -205,6 +205,8 @@ Balance    { total, count }
 JarInput   { title, description?, fineAmount, currency, visibility, publicSlug? }
 ```
 
+On `PUT /jars/:id`, an absent `publicSlug` keeps the jar's current link; `null` or an empty string derives a fresh one from the title, as the web form's empty field does.
+
 | Method and path | Request | Response |
 |---|---|---|
 | `POST /links` | `{ kind, name }` | `201` link (section 5.2) |

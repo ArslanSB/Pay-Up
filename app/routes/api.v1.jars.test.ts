@@ -89,6 +89,17 @@ describe("/api/v1/jars/:id", () => {
     expect((await response.json()).jar).toMatchObject({ title: "Gripe jar", fineAmount: 250, visibility: "private", unsettledTotal: 100 });
     expect(getHistory(getDb(), jar.id).unsettled[0].amount).toBe(100);
   });
+  it("PUT keeps a custom link when publicSlug is absent, and derives a fresh one for null", async () => {
+    const { user, token } = owner();
+    const jar = createJar(getDb(), user.id, { ...input, publicSlug: "my-custom-link" });
+    const kept = await jarCall("PUT", token, jar.id, { ...body, fineAmount: 175 });
+    expect(kept.status).toBe(200);
+    expect((await kept.json()).jar).toMatchObject({ fineAmount: 175, publicUrl: "http://localhost:3000/j/my-custom-link" });
+    const derived = await jarCall("PUT", token, jar.id, { ...body, publicSlug: null });
+    const { publicUrl } = (await derived.json()).jar;
+    expect(publicUrl).toMatch(/^http:\/\/localhost:3000\/j\/doom-jar/);
+    expect(publicUrl).not.toContain("my-custom-link");
+  });
   it("PUT 409s a taken link", async () => {
     createJar(getDb(), makeUser().id, { ...input, publicSlug: "held-elsewhere" });
     const { user, token } = owner();

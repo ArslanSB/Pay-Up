@@ -41,10 +41,12 @@ export const action = api(async ({ request, params }: Route.ActionArgs) => {
     deleteJar(db, jar.id);
     return apiNoContent();
   }
-  const parsed = parseJarJson(await readJsonBody(request));
+  const body = await readJsonBody(request);
+  const parsed = parseJarJson(body);
   if (!parsed.ok) return validationError(parsed.fields);
+  const input = "publicSlug" in body ? parsed.input : { ...parsed.input, publicSlug: jar.publicSlug };
   try {
-    if (!updateJar(db, jar.id, parsed.input)) return jarNotFound();
+    if (!updateJar(db, jar.id, input)) return jarNotFound();
   } catch (error) {
     if (error instanceof SlugTakenError) return slugTakenError();
     throw error;
