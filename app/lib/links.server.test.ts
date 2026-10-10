@@ -80,15 +80,16 @@ describe("pollLink", () => {
 describe("findLink, approveLink and cancelLink", () => {
   it("finds an unexpired link and says whether it is approved", () => {
     const link = startLink(db, "phone", "Pixel 9", T0);
-    expect(findLink(db, link.userCode, seconds(1))).toEqual({ kind: "phone", name: "Pixel 9", expiresAt: link.expiresAt, approved: false });
+    expect(findLink(db, link.userCode, seconds(1))).toEqual({ kind: "phone", name: "Pixel 9", expiresAt: link.expiresAt, approved: false, approvedBy: null });
     approveLink(db, link.userCode, userId, seconds(2));
-    expect(findLink(db, link.userCode, seconds(3))?.approved).toBe(true);
+    expect(findLink(db, link.userCode, seconds(3))).toMatchObject({ approved: true, approvedBy: userId });
     expect(findLink(db, link.userCode, seconds(600))).toBeNull();
     expect(findLink(db, "BBBBBBBB", seconds(1))).toBeNull();
   });
-  it("approves once, and never after expiry", () => {
+  it("approves for one user (who may retry), and never after expiry", () => {
     const link = startLink(db, "watch", "W", T0);
     expect(approveLink(db, link.userCode, userId, seconds(1))).toBe(true);
+    expect(approveLink(db, link.userCode, userId, seconds(2))).toBe(true);
     expect(approveLink(db, link.userCode, otherId, seconds(2))).toBe(false);
     const late = startLink(db, "watch", "Late", T0);
     expect(approveLink(db, late.userCode, userId, seconds(600))).toBe(false);

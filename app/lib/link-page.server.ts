@@ -32,7 +32,7 @@ export async function linkPageLoader(request: Request, options: { autoProvider: 
   const code = normalizeUserCode(raw);
   const link = code ? findLink(db, code) : null;
   if (!code || !link) return { state: "expired" };
-  if (link.approved) return { state: "approved", kind: link.kind };
+  if (link.approved) return link.approvedBy === user.id ? { state: "approved", kind: link.kind } : { state: "expired" };
   return { state: "confirm", code: formatUserCode(code), kind: link.kind, name: link.name };
 }
 
@@ -50,6 +50,6 @@ export async function linkPageAction(request: Request): Promise<LinkPageState | 
   }
   const link = findLink(db, code);
   if (!link) return { state: "expired" };
-  if (!link.approved && !approveLink(db, code, user.id)) return { state: "expired" };
+  if (!approveLink(db, code, user.id)) return { state: "expired" };
   return { state: "approved", kind: link.kind };
 }

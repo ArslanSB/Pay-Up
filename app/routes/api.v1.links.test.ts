@@ -80,6 +80,13 @@ describe("POST /api/v1/links/token", () => {
     expect(again.status).toBe(410);
     expect((await again.json()).error).toEqual({ code: "expired", message: "That code has expired. Start again on your device." });
   });
+  it("approves idempotently for the same phone token", async () => {
+    const phoneToken = deviceTokenFor(makeUser().id, "phone");
+    const { body } = await start();
+    const approve = () => approveAction(callArgs(apiRequest(`${BASE}/links/x/approve`, { method: "POST", token: phoneToken }), { code: body.userCode }));
+    expect((await approve()).status).toBe(204);
+    expect((await approve()).status).toBe(204);
+  });
   it("needs a device code", async () => {
     expect((await tokenAction(callArgs(apiRequest(`${BASE}/links/token`, { body: {} })))).status).toBe(400);
   });

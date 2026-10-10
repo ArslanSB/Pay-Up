@@ -22,6 +22,8 @@ export interface LinkInfo {
   name: string;
   expiresAt: string;
   approved: boolean;
+  /** The user who approved it, if any. */
+  approvedBy: string | null;
 }
 
 export type PollResult =
@@ -98,14 +100,15 @@ export function findLink(db: Db, userCode: string, now: Date = new Date()): Link
   const row = db
     .prepare<[string, string], LinkRow>("SELECT * FROM device_links WHERE user_code = ? AND expires_at > ?")
     .get(userCode, now.toISOString());
-  return row ? { kind: row.kind, name: row.name, expiresAt: row.expires_at, approved: row.approved_by !== null } : null;
+  return row ? { kind: row.kind, name: row.name, expiresAt: row.expires_at, approved: row.approved_by !== null, approvedBy: row.approved_by } : null;
 }
 
+/** Approves for this user. The same user approving again still succeeds; another user's approval does not. */
 export function approveLink(db: Db, userCode: string, userId: string, now: Date = new Date()): boolean {
   return (
     db
-      .prepare("UPDATE device_links SET approved_by = ? WHERE user_code = ? AND expires_at > ? AND approved_by IS NULL")
-      .run(userId, userCode, now.toISOString()).changes > 0
+      .prepare("UPDATE device_links SET approved_by = ? WHERE user_code = ? AND expires_at > ? AND (approved_by IS NULL OR approved_by = ?)")
+      .run(userId, userCode, now.toISOString(), userId).changes > 0
   );
 }
 

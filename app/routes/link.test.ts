@@ -67,6 +67,13 @@ describe("/link action", () => {
     expect(await action(callArgs(formRequest(`${ORIGIN}/link`, { intent: "approve", code: link.display }, cookie)))).toEqual({ state: "approved", kind: "watch" });
     expect(await loader(callArgs(getRequest(`${ORIGIN}/link?code=${link.display}`, cookie)))).toEqual({ state: "approved", kind: "watch" });
   });
+  it("tells a different user that an approved code has expired, in the loader and the action", async () => {
+    const link = newLink();
+    await action(callArgs(formRequest(`${ORIGIN}/link`, { intent: "approve", code: link.display }, await sessionCookieFor(makeUser().id))));
+    const other = await sessionCookieFor(makeUser().id);
+    expect(await loader(callArgs(getRequest(`${ORIGIN}/link?code=${link.display}`, other)))).toEqual({ state: "expired" });
+    expect(await action(callArgs(formRequest(`${ORIGIN}/link`, { intent: "approve", code: link.display }, other)))).toEqual({ state: "expired" });
+  });
   it("cancels back to the jars, after which the device gets nothing", async () => {
     const link = newLink();
     const response = (await action(
