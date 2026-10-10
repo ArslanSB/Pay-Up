@@ -25,6 +25,8 @@ export default [
   route("api/v1/jars/:id/fines/:fineId", "routes/api.v1.jars.$id.fines.$fineId.ts"),
   route("api/v1/jars/:id/settlements", "routes/api.v1.jars.$id.settlements.ts"),
   route("account", "routes/account.tsx"),
+  route("link", "routes/link.tsx"),
+  route("link/phone", "routes/link.phone.tsx"),
   route("terms", "routes/terms.tsx"),
   route("privacy", "routes/privacy.tsx"),
 ] satisfies RouteConfig;
